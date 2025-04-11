@@ -34,3 +34,13 @@ C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\obj\Debug\net6.0\refint\FilmesApi.dll
 C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\obj\Debug\net6.0\FilmesApi.pdb
 C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\obj\Debug\net6.0\FilmesApi.genruntimeconfig.cache
 C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\obj\Debug\net6.0\ref\FilmesApi.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Humanizer.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\MySqlConnector.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\obj\Debug\net6.0\FilmesApi.sourcelink.json

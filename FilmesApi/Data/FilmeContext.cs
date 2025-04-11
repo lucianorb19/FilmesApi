@@ -7,7 +7,7 @@ namespace FilmesApi.Data
     {
         //PROPRIEDADES
 
-        //PROPRIEDADE DE ACESSO AOS FILMES DA BD
+        //PROPRIEDADE DE ACESSO AOS FILMES DA BD - TAMBÉM CHAMADA DE CONTEXTO
         public DbSet<Filme> Filmes{ get; set; }
 
 

@@ -3,6 +3,8 @@ namespace FilmesApi.Models;
 
 public class Filme
 {
+    [Key]//CAMPO Id É A CHAVE DA ENTIDADE/TABELA
+    [Required]
     public int Id { get; set; }
     
     [Required(ErrorMessage = "Título do filme obrigatório")]
