@@ -1,0 +1,56 @@
+﻿using FilmesApi.Models;
+using Microsoft.AspNetCore.Mvc;//USO DO [Route("[controller]")] E [ApiController]
+
+namespace FilmesApi.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]//DESIGNA A ROTA Filme (VEM DO NOME DA CLASS)
+    public class FilmeController : ControllerBase
+    {
+        //LISTA DE FILMES
+        private static List<Filme> filmes = new List<Filme>();
+        private static int id = 0;//VARIÁVEL QUE SERÁ ATRIBUÍDA AO CAMPO Id do objeto Filme
+
+        //MÉTODO QUE ADICIONA UM OBJETO FILME À LISTA
+        [HttpPost] // DESIGNA QUE O MÉTODO ABAIXO INSERE INFORMAÇÕES NA APLICAÇÃO
+        public IActionResult AdicionaFilme([FromBody] Filme filme)
+        {                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
+            
+            filme.Id = id++;// 0, 1, 2....
+            filmes.Add(filme);
+            return CreatedAtAction(nameof(RecuperaFilmePorId), 
+                                   new { id = filme.Id }, 
+                                   filme);
+
+            //CreatedAtAction - MÉTODO PADRÃO REST - RETORNA O OBJETO ADICIONADO E O SEU CAMINHO
+            //nameof(RecuperaFilmePorId) new { id = filme.Id } - CAMINHO DO OBJETO CRIADO
+            //filme - OBJETO CRIADO
+        }
+
+        //MÉTODO QUE LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
+        //E MOSTRANDO OS PRÓXIMOS take FILMES
+        [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
+        public IEnumerable<Filme> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
+                                                 [FromQuery] int take = 50) //SEM DEFINIR, take É 50
+        {
+            return filmes.Skip(skip).Take(take);//LISTA DE FILMES
+        }
+
+        //MÉTODO QUE RETORNA O PRIMEIRO FILME ENCONTRADO, DADO SEU ID
+        [HttpGet("{id}")]//MÉTODO ABAIXO USA O VERBO GET, MAS COM ID, DIFERENTE DO ACIMA
+        public IActionResult RecuperaFilmePorId(int id)
+        {      //IActionResult - TIPO DE OBJETO QUE VEM DA INTERFACE ControllerBase
+               //SERVE PARA GERAR RETORNOS QUE SÃO RESULTADOS DE REQUISIÇÃO
+               //NESSE CASO, NotFound() E Ok() SÃO MÉTODOS COM RETORNO DO TIPO IActionResult
+
+            var filme = filmes.FirstOrDefault(filme => filme.Id == id);
+            if (filme == null) return NotFound();//SE NÃO HOUVER RESULTADO - ERRO 404 - PADRÃO REST
+            return Ok(filme);//SE HOUVER RESULTADO - NORMAL - 200 OK
+        }
+
+
+
+
+
+    }
+}
