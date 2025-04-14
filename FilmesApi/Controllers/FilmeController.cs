@@ -1,5 +1,8 @@
-﻿using FilmesApi.Data;
+﻿using AutoMapper;
+using FilmesApi.Data;
+using FilmesApi.Data.Dtos;
 using FilmesApi.Models;
+using FilmesApi.Profiles;
 using Microsoft.AspNetCore.Mvc;//USO DO [Route("[controller]")] E [ApiController]
 
 namespace FilmesApi.Controllers
@@ -12,20 +15,25 @@ namespace FilmesApi.Controllers
         //private static List<Filme> filmes = new List<Filme>();
         //private static int id = 0;//VARIÁVEL QUE SERÁ ATRIBUÍDA AO CAMPO Id do objeto Filme
 
-        private FilmeContext _context;//VARIÁVEL DE CONEXÃO COM BD
+        private FilmeContext _context;//ATRIBUTO DE CONEXÃO COM BD
+        private IMapper _mapper;//ATRIBUTO DTO Filme
 
-        public FilmeController(FilmeContext context)
+        public FilmeController(FilmeContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         //MÉTODO QUE ADICIONA UM OBJETO FILME À LISTA
         [HttpPost] // DESIGNA QUE O MÉTODO ABAIXO INSERE INFORMAÇÕES NA APLICAÇÃO
-        public IActionResult AdicionaFilme([FromBody] Filme filme)
+        public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
         {                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
 
             //filme.Id = id++;// 0, 1, 2....
             //filmes.Add(filme);
+            
+            //Objeto filme recebe um objeto Filme a partir do mapeamento de filmeDTO
+            Filme filme = _mapper.Map<Filme>(filmeDto);
             _context.Filmes.Add(filme); //FILME ADICIONADO A BD
             _context.SaveChanges(); //MUDANÇAS SALVAS NA BD
             return CreatedAtAction(nameof(RecuperaFilmePorId), 

@@ -9,6 +9,9 @@ builder.Services.AddDbContext<FilmeContext>(opts =>
 opts.UseMySql(connectionString,
               ServerVersion.AutoDetect(connectionString)));
 
+//AUTOMAPPER PODE SER USADO EM TODA A APLICAÇÃO
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Add services to the container.
 
 builder.Services.AddControllers();

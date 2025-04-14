@@ -8,8 +8,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "filme",
-        "Type": "FilmesApi.Models.Filme",
+        "Name": "filmeDto",
+        "Type": "FilmesApi.Data.Dtos.CreateFilmeDto",
         "IsRequired": true
       }
     ],

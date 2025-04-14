@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace FilmesApi.Models;
+namespace FilmesApi.Data.Dtos;
 
-public class Filme
+public class CreateFilmeDto//CLASSE QUE INTERMEDIA ENTRE Controll e Filme
 {
-    [Key]//CAMPO Id É A CHAVE DA ENTIDADE/TABELA
-    [Required]
-    public int Id { get; set; }
 
     [Required(ErrorMessage = "Título do filme obrigatório")]
-    [MaxLength(50, ErrorMessage = "Título do filme não pode exceder 50 caractéres")]
+    [StringLength(50, ErrorMessage = "Título do filme não pode exceder 50 caractéres")]
     public string Titulo { get; set; }
 
     [Required(ErrorMessage = "Gênero do filme obrigatório")]

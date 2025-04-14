@@ -44,3 +44,5 @@ C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Microsoft.Extensions
 C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\MySqlConnector.dll
 C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Pomelo.EntityFrameworkCore.MySql.dll
 C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\obj\Debug\net6.0\FilmesApi.sourcelink.json
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\AutoMapper.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
