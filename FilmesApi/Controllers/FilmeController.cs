@@ -1,4 +1,5 @@
-﻿using FilmesApi.Models;
+﻿using FilmesApi.Data;
+using FilmesApi.Models;
 using Microsoft.AspNetCore.Mvc;//USO DO [Route("[controller]")] E [ApiController]
 
 namespace FilmesApi.Controllers
@@ -7,17 +8,26 @@ namespace FilmesApi.Controllers
     [Route("[controller]")]//DESIGNA A ROTA Filme (VEM DO NOME DA CLASS)
     public class FilmeController : ControllerBase
     {
-        //LISTA DE FILMES
-        private static List<Filme> filmes = new List<Filme>();
-        private static int id = 0;//VARIÁVEL QUE SERÁ ATRIBUÍDA AO CAMPO Id do objeto Filme
+        //LISTA DE FILMES (SUBSTITUÍDA PELA CONEXÃO COM BD)
+        //private static List<Filme> filmes = new List<Filme>();
+        //private static int id = 0;//VARIÁVEL QUE SERÁ ATRIBUÍDA AO CAMPO Id do objeto Filme
+
+        private FilmeContext _context;//VARIÁVEL DE CONEXÃO COM BD
+
+        public FilmeController(FilmeContext context)
+        {
+            _context = context;
+        }
 
         //MÉTODO QUE ADICIONA UM OBJETO FILME À LISTA
         [HttpPost] // DESIGNA QUE O MÉTODO ABAIXO INSERE INFORMAÇÕES NA APLICAÇÃO
         public IActionResult AdicionaFilme([FromBody] Filme filme)
         {                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
-            
-            filme.Id = id++;// 0, 1, 2....
-            filmes.Add(filme);
+
+            //filme.Id = id++;// 0, 1, 2....
+            //filmes.Add(filme);
+            _context.Filmes.Add(filme); //FILME ADICIONADO A BD
+            _context.SaveChanges(); //MUDANÇAS SALVAS NA BD
             return CreatedAtAction(nameof(RecuperaFilmePorId), 
                                    new { id = filme.Id }, 
                                    filme);
@@ -27,14 +37,17 @@ namespace FilmesApi.Controllers
             //filme - OBJETO CRIADO
         }
 
+
         //MÉTODO QUE LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
         //E MOSTRANDO OS PRÓXIMOS take FILMES
         [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
         public IEnumerable<Filme> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
                                                  [FromQuery] int take = 50) //SEM DEFINIR, take É 50
         {
-            return filmes.Skip(skip).Take(take);//LISTA DE FILMES
+            //return filmes.Skip(skip).Take(take);//LISTA DE FILMES
+            return _context.Filmes.Skip(skip).Take(take);//LISTA DE FILMES
         }
+
 
         //MÉTODO QUE RETORNA O PRIMEIRO FILME ENCONTRADO, DADO SEU ID
         [HttpGet("{id}")]//MÉTODO ABAIXO USA O VERBO GET, MAS COM ID, DIFERENTE DO ACIMA
@@ -43,14 +56,10 @@ namespace FilmesApi.Controllers
                //SERVE PARA GERAR RETORNOS QUE SÃO RESULTADOS DE REQUISIÇÃO
                //NESSE CASO, NotFound() E Ok() SÃO MÉTODOS COM RETORNO DO TIPO IActionResult
 
-            var filme = filmes.FirstOrDefault(filme => filme.Id == id);
+            //var filme = filmes.FirstOrDefault(filme => filme.Id == id);
+            var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
             if (filme == null) return NotFound();//SE NÃO HOUVER RESULTADO - ERRO 404 - PADRÃO REST
             return Ok(filme);//SE HOUVER RESULTADO - NORMAL - 200 OK
         }
-
-
-
-
-
     }
 }

@@ -1,21 +1,20 @@
 ﻿using FilmesApi.Models;
 using Microsoft.EntityFrameworkCore;//DbContext
 
-namespace FilmesApi.Data
+namespace FilmesApi.Data;
+
+public class FilmeContext : DbContext//CLASSE QUE REMEDIA LIGAÇÃO FILME (ENTIDADE) <-> FILME (BD)
 {
-    public class FilmeContext : DbContext//CLASSE QUE REMEDIA LIGAÇÃO FILME (ENTIDADE) <-> FILME (BD)
-    {
-        //PROPRIEDADES
+    //PROPRIEDADES
 
-        //PROPRIEDADE DE ACESSO AOS FILMES DA BD - TAMBÉM CHAMADA DE CONTEXTO
-        public DbSet<Filme> Filmes{ get; set; }
+    //PROPRIEDADE DE ACESSO AOS FILMES DA BD
+    public DbSet<Filme> Filmes{ get; set; }
 
 
-        //CONSTRUTOR QUE USA O CONSTRUTOR BASE (CONSTRUTOR DE DbContext)
-        public FilmeContext(DbContextOptions<FilmeContext> opts)
-        : base(opts)
-        {               
-               
-        }
+    //CONSTRUTOR QUE USA O CONSTRUTOR BASE (CONSTRUTOR DE DbContext)
+    public FilmeContext(DbContextOptions<FilmeContext> opts)
+    : base(opts)
+    {               
+           
     }
 }
