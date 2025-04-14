@@ -69,5 +69,23 @@ namespace FilmesApi.Controllers
             if (filme == null) return NotFound();//SE NÃO HOUVER RESULTADO - ERRO 404 - PADRÃO REST
             return Ok(filme);//SE HOUVER RESULTADO - NORMAL - 200 OK
         }
+
+        //MÉTODO QUE ATUALIZA UM FILME, DADO SEU ID, COM AS INFORMAÇÕES DO BODY
+        //SE NÃO ENCONTRAR O FILME PELO ID - NOT FOUND
+        [HttpPut("{id}")]
+        public IActionResult AtualizaFilme(int id, [FromBody] UpdateFilmeDto filmeDto)
+        {
+            //SALVO O FILME PROCURADO EM filme
+            var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
+            if (filme == null) return NotFound();
+            _mapper.Map(filmeDto, filme);//SE ENCONTRAR, FILME É MAPEADO/ATUALIZADO PARA filmeDto
+            _context.SaveChanges();
+            return NoContent(); //RETORNO REST PARA UPDATE (204 NoContent)
+        }
+
+
+
+
+
     }
 }
