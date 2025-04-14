@@ -3,6 +3,7 @@ using FilmesApi.Data;
 using FilmesApi.Data.Dtos;
 using FilmesApi.Models;
 using FilmesApi.Profiles;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;//USO DO [Route("[controller]")] E [ApiController]
 
 namespace FilmesApi.Controllers
@@ -72,13 +73,39 @@ namespace FilmesApi.Controllers
 
         //MÉTODO QUE ATUALIZA UM FILME, DADO SEU ID, COM AS INFORMAÇÕES DO BODY
         //SE NÃO ENCONTRAR O FILME PELO ID - NOT FOUND
-        [HttpPut("{id}")]
+        [HttpPut("{id}")]//HttpPut - DESIGNA UMA ATUALIZAÇÃO COMPLETA DO OBJETO
         public IActionResult AtualizaFilme(int id, [FromBody] UpdateFilmeDto filmeDto)
         {
             //SALVO O FILME PROCURADO EM filme
             var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
             if (filme == null) return NotFound();
-            _mapper.Map(filmeDto, filme);//SE ENCONTRAR, FILME É MAPEADO/ATUALIZADO PARA filmeDto
+            _mapper.Map(filmeDto, filme);//SE ENCONTRAR, filmeDto É MAPEADO/ATUALIZADO PARA filme - MUDANÇA NO BANCO
+            _context.SaveChanges();
+            return NoContent(); //RETORNO REST PARA UPDATE (204 NoContent)
+        }
+
+        //MÉTODO QUE ATUALIZA PARCIALMENTE UM FILME, DADO SEU ID, COM AS INFORMAÇÕES DO BODY
+        [HttpPatch("{id}")]//HttpPatch - DESIGNA UMA ATUALIZAÇÃO PARCIAL DO OBJETO
+        public IActionResult AtualizaFilmeParcial(int id, JsonPatchDocument<UpdateFilmeDto> patch)
+        {                                                 //RECEBER NO PARÂMETRO UM patch DE ATUALIZAÇÃO
+            //SALVO O FILME PROCURADO EM filme
+            var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
+            if (filme == null) return NotFound();
+
+            //VALIDAÇÃO DO PATCH RECEBIDO 
+            //1º TORNAR O OBJETO Filme ENCONTRADO NO BANCO, UM UpdateFilmeDto - PARA PODER VERIFICAR SE É APLICÁVEL
+            var filmeParaAtualizar = _mapper.Map<UpdateFilmeDto>(filme); //*ADICIONAR EM FilmeProfile CreateMap<Filme, UpdateFilmeDto>();
+
+            //TENTO APLICAR AS MUDANÇAS DO PATCH AO OBJETO filmeParaAtualizar
+            patch.ApplyTo(filmeParaAtualizar, ModelState);
+
+            //SE NÃO CONSEGUIR VALIDAR A ATUALIZAÇÃO COM O PATCH, O ERRO É INDICADO
+            if (!TryValidateModel(ModelState))
+            {
+                return ValidationProblem(ModelState);
+            }
+            //SE TUDO DER CERTO E O FILME FOR ATUÁLIZAVEL, CONSIDERANDO AS MUDANÇAS INDICADAS
+            _mapper.Map(filmeParaAtualizar, filme);//filmeParaAtualizar É MAPEADO/ATUALIZADO PARA filme - MUDANÇA NO BANCO
             _context.SaveChanges();
             return NoContent(); //RETORNO REST PARA UPDATE (204 NoContent)
         }
