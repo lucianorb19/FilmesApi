@@ -338,7 +338,7 @@ public class FilmeController : ControllerBase
 }
 ```
 
-### DTO - Data Transfer Object - Em Criar um Filme (adicionaFilme)
+## DTO - Data Transfer Object - Em Criar um Filme (adicionaFilme)
 
 Downloads necessários:  
 Ferramentas->Gerenciador de Pacotes Nuget->   
@@ -415,6 +415,182 @@ public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
 }
 ```
 
+### Update Filme (já com DTO) - PUT
+Atualizar as informações do objeto com o verbo Http PUT, que atualiza um objeto completo.
+
+Data->Dtos-> Classe UpdateFilmeDto (com mesmo conteúdo de CreateFilmeDto)
+
+Profile->FilmeProfile.cs -> Adicionar ao construtor o método que vai possibilitar o AutoMap a conveter UpdateFilmeDto para Filme
+```
+public class FilmeProfile : Profile
+{
+    public FilmeProfile()
+    {
+        CreateMap<CreateFilmeDto, Filme>();
+        CreateMap<UpdateFilmeDto, Filme>();
+    }
+}
+```
+### Update Filme (já com DTO) - PATCH
+Downloads necessários:  
+Ferramentas->Geranciador de Pacotes Nuget->   
+Microsoft.AspNetCore.Mvc.NewtonSoftJson (v.6.0.1)  
+
+Atualizar as informações do objeto com o verbo Http PATCH, que atualiza parcialmente um objeto.
+
+
+Programs->
+```
+builder.Services.AddControllers().AddNewtonsoftJson();
+
+
+Profiles-> FilmeProfile
+ public FilmeProfile()
+ {
+     CreateMap<CreateFilmeDto, Filme>();
+     CreateMap<UpdateFilmeDto, Filme>();
+     CreateMap<Filme, UpdateFilmeDto>();
+ }
+```
+FilmeController
+```
+//MÉTODO QUE ATUALIZA PARCIALMENTE UM FILME, DADO SEU ID, COM AS INFORMAÇÕES DO BODY
+[HttpPatch("{id}")]//HttpPatch - DESIGNA UMA ATUALIZAÇÃO PARCIAL DO OBJETO
+public IActionResult AtualizaFilmeParcial(int id, JsonPatchDocument<UpdateFilmeDto> patch)
+{                                                 //RECEBER NO PARÂMETRO UM patch DE ATUALIZAÇÃO
+    //SALVO O FILME PROCURADO EM filme
+    var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
+    if (filme == null) return NotFound();
+
+    //VALIDAÇÃO DO PATCH RECEBIDO 
+    //1º TORNAR O OBJETO Filme ENCONTRADO NO BANCO, UM UpdateFilmeDto - PARA PODER VERIFICAR SE É APLICÁVEL O PATCH
+    var filmeParaAtualizar = _mapper.Map<UpdateFilmeDto>(filme); //*ADICIONAR EM FilmeProfile CreateMap<Filme, UpdateFilmeDto>();
+
+    //TENTO APLICAR AS MUDANÇAS DO PATCH AO OBJETO filmeParaAtualizar
+    patch.ApplyTo(filmeParaAtualizar, ModelState);
+
+    //SE NÃO CONSEGUIR VALIDAR A ATUALIZAÇÃO COM O PATCH, O ERRO É INDICADO
+    if (!TryValidateModel(ModelState))
+    {
+        return ValidationProblem(ModelState);
+    }
+    //SE TUDO DER CERTO E O FILME FOR ATUÁLIZAVEL, CONSIDERANDO AS MUDANÇAS INDICADAS
+    _mapper.Map(filmeParaAtualizar, filme);//filmeParaAtualizar É MAPEADO/ATUALIZADO PARA filme - MUDANÇA NO BANCO
+    _context.SaveChanges();
+    return NoContent(); //RETORNO REST PARA UPDATE (204 NoContent)
+}
+```
+
+### DELETE FILME
+```
+[HttpDelete("{id}")]//DESIGNA QUE A FUNÇÃO ABAIXO UTILIZARÁ DELEÇÃO
+public IActionResult DeletaFilmes(int id)
+{
+    var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
+    if (filme == null) return NotFound();
+    _context.Remove(filme);//DELETA O FILME
+    _context.SaveChanges();
+    return NoContent();
+}
+```
+### LEITURA DE DADOS - COM DTO
+
+Data->Dtos->ReadFilmeDTO
+```
+public class ReadFilmeDto
+{
+    public string Titulo { get; set; }
+    public string Genero { get; set; }
+    public int Duracao { get; set; }
+    public DateTime HoraDaConsulta { get; set; } = DateTime.Now;//VARIÁVEL EXCLUSIVA DO ReadDto
+                                                                //Hora que o filme foi consultado
+}
+```
+
+FilmeController-> Ambos métodos de leitura de dados modificados para retornar DTOs
+```
+public IEnumerable<ReadFilmeDto> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
+                                         [FromQuery] int take = 50) //SEM DEFINIR, take É 50
+{
+    //return filmes.Skip(skip).Take(take);//LISTA DE FILMES
+    //return _context.Filmes.Skip(skip).Take(take);//LISTA DE FILMES
+    //RETORNO É UMA MAPPER DA LISTA DTO DO TIPO ReadFilmeDto
+    return _mapper.Map<List<ReadFilmeDto>>
+                            (_context.Filmes.Skip(skip).Take(take));
+
+}
+
+
+//MÉTODO QUE RETORNA O PRIMEIRO FILME ENCONTRADO, DADO SEU ID
+[HttpGet("{id}")]//MÉTODO ABAIXO USA O VERBO GET, MAS COM ID, DIFERENTE DO ACIMA
+public IActionResult RecuperaFilmePorId(int id)
+{      //IActionResult - TIPO DE OBJETO QUE VEM DA INTERFACE ControllerBase
+       //SERVE PARA GERAR RETORNOS QUE SÃO RESULTADOS DE REQUISIÇÃO
+       //NESSE CASO, NotFound() E Ok() SÃO MÉTODOS COM RETORNO DO TIPO IActionResult
+
+    //var filme = filmes.FirstOrDefault(filme => filme.Id == id);
+    var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
+    if (filme == null) return NotFound();//SE NÃO HOUVER RESULTADO - ERRO 404 - PADRÃO REST
+    var filmeDto = _mapper.Map<ReadFilmeDto>(filme);//O RETORNO É UM Dto
+    return Ok(filmeDto);//SE HOUVER RESULTADO - NORMAL - 200 OK
+}
+```
+FilmeProfile->Adicionar
+```
+ CreateMap<Filme, ReadFilmeDto>();
+```
+
+### DOCUMENTAÇÃO DA APLICAÇÃO
+A documentação, pelo swagger, pode ser feita através dos próprios métodos
+FilmeController->
+```
+//DOCUMENTAÇÃO SWAGGER
+/// <summary>
+/// Adiciona um filme à base de dados.
+/// </summary>
+/// <param name="filmeDto">DTO usado pelo mapper para efetivar as mudanças na base de dados</param>
+/// <returns>IActionResult</returns>
+/// <response code="201">Em caso de inserção bem sucedida</response>
+[HttpPost]
+[ProducesResponseType(StatusCodes.Status201Created)]
+public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
+{                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
+
+    //filme.Id = id++;// 0, 1, 2....
+    //filmes.Add(filme);
+            
+    //Objeto filme recebe um objeto Filme a partir do mapeamento de filmeDTO
+    Filme filme = _mapper.Map<Filme>(filmeDto);
+    _context.Filmes.Add(filme); //FILME ADICIONADO A BD
+    _context.SaveChanges(); //MUDANÇAS SALVAS NA BD
+    return CreatedAtAction(nameof(RecuperaFilmePorId), 
+                           new { id = filme.Id }, 
+                           filme);
+
+    //CreatedAtAction - MÉTODO PADRÃO REST - RETORNA O OBJETO ADICIONADO E O SEU CAMINHO
+    //nameof(RecuperaFilmePorId) new { id = filme.Id } - CAMINHO DO OBJETO CRIADO
+    //filme - OBJETO CRIADO
+}
+
+Program->
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "FilmesApi", Version = "v1" });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
+
+
+Para habilitar a exibição de documentação no swagger
+Clique duplo no projeto->
+ <PropertyGroup>
+   <TargetFramework>net6.0</TargetFramework>
+   <Nullable>enable</Nullable>
+   <ImplicitUsings>enable</ImplicitUsings>
+<GenerateDocumentationFile>true</GenerateDocumentationFile>
+ </PropertyGroup>
+```
 
  
 
