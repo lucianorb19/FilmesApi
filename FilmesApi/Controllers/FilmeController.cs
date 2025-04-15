@@ -26,10 +26,17 @@ namespace FilmesApi.Controllers
         }
 
 
-        //MÉTODO QUE ADICIONA UM OBJETO FILME À LISTA
-        [HttpPost] // DESIGNA QUE O MÉTODO ABAIXO INSERE INFORMAÇÕES NA APLICAÇÃO
+        //DOCUMENTAÇÃO SWAGGER
+        /// <summary>
+        /// Adiciona um filme à base de dados.
+        /// </summary>
+        /// <param name="filmeDto">DTO usado pelo mapper para efetivar as mudanças na base de dados</param>
+        /// <returns>IActionResult</returns>
+        /// <response code="201">Em caso de inserção bem sucedida</response>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
-        {                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
+        {                         //[FromBody] DESGINA QUE O OBJETO filmeDto VIRÁ DO CORPO DA REQUISIÇÃO
 
             //filme.Id = id++;// 0, 1, 2....
             //filmes.Add(filme);
@@ -50,6 +57,13 @@ namespace FilmesApi.Controllers
 
         //MÉTODO QUE LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
         //E MOSTRANDO OS PRÓXIMOS take FILMES
+        /// <summary>
+        /// Método que lista vários filmes da aplicação
+        /// </summary>
+        /// <param name="skip"> Quantos filmes iniciais serão desconsiderados</param>
+        /// <param name="take"> Quantos filmes serão mostrados</param>
+        /// <returns>IActionResult</returns>
+        /// <response code="200">Em caso de leitura bem sucedida</response>
         [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
         public IEnumerable<ReadFilmeDto> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
                                                  [FromQuery] int take = 50) //SEM DEFINIR, take É 50
@@ -64,6 +78,12 @@ namespace FilmesApi.Controllers
 
 
         //MÉTODO QUE RETORNA O PRIMEIRO FILME ENCONTRADO, DADO SEU ID
+        /// <summary>
+        /// Método que retorna o primeiro filme encontrado, dado seu ID
+        /// </summary>
+        /// <param name="id"> Identificador único para cada filme</param>
+        /// <returns>IActionResult</returns>
+        /// <response code="200">Em caso de leitura bem sucedida</response>
         [HttpGet("{id}")]//MÉTODO ABAIXO USA O VERBO GET, MAS COM ID, DIFERENTE DO ACIMA
         public IActionResult RecuperaFilmePorId(int id)
         {      //IActionResult - TIPO DE OBJETO QUE VEM DA INTERFACE ControllerBase

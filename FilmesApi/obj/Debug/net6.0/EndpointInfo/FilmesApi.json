@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "FilmesApi",
-    "version": "1.0"
+    "version": "v1"
   },
   "paths": {
     "/Filme": {
@@ -10,7 +10,9 @@
         "tags": [
           "Filme"
         ],
+        "summary": "Adiciona um filme à base de dados.",
         "requestBody": {
+          "description": "DTO usado pelo mapper para efetivar as mudanças na base de dados",
           "content": {
             "application/json-patch+json": {
               "schema": {
@@ -35,8 +37,8 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Em caso de inserção bem sucedida"
           }
         }
       },

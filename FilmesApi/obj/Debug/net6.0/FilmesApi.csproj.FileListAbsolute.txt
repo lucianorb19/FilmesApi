@@ -50,3 +50,5 @@ C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Microsoft.AspNetCore
 C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Newtonsoft.Json.dll
 C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\bin\Debug\net6.0\FilmesApi.xml
+C:\Users\CREAS\Desktop\FilmesApi\FilmesApi\obj\Debug\net6.0\FilmesApi.xml
