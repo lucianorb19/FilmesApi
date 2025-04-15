@@ -170,7 +170,7 @@ Assim, toda vez que um objeto Filme for usado, seus atributos/propriedades segui
 
 ### LEITURA DE DADOS NA APLICAÇÃO - GET
 
-### TODOS OS DADOS
+#### TODOS OS DADOS
 Utilizando a mesma classe (FilmeController), agora com um método que recebe HttpGet
 ```
 [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
@@ -180,7 +180,7 @@ public IEnumerable<Filme> recuperaFilmes()
 }
 ```
 
-### DADOS QUE CORRESPONDEM A UM CRITÉRIO
+#### DADOS QUE CORRESPONDEM A UM CRITÉRIO
 Utilizando a mesma classe (FilmeController), agora com um método que recebe HttpGet e um parâmetro id
 ```
 //MÉTODO QUE RETORNA O PRIMEIRO FILME ENCONTRADO, DADO SEU ID
@@ -196,6 +196,147 @@ Mudada também a estrutura da classe filme
 public int Id { get; set; }
 ```
 
+### PAGINAÇÃO DE DADOS COM SKIP E TAKE
+Quando a quantidade de dados em memória for muito grande, pode ser útil dar ao usuário a opção de mostrar partes desses dados somente. Isso pode ser feito com os métodos Skip e Take aplicados na função que usar o verbo Get no Controlador.
+```
+//MÉTODO QUE LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
+//E MOSTRANDO OS PRÓXIMOS take FILMES
+[HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
+public IEnumerable<Filme> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
+                                         [FromQuery] int take = 50) //SEM DEFINIR, take É 50
+{
+    return filmes.Skip(skip).Take(take);//LISTA DE FILMES
+}
+```
+
+### CONEXÃO COM BASE DE DADOS
+Downloads necessários
+Ferramentas -> Gerenciador de Pacotes NuGet- Gerenciar pacotes solução->Procurar-> Baixar
+Microsoft.EntityFrameworkCore - versão. 6.0.10
+MicrosoftEntityFrameworkCore.Tools versão. 6.0.10
+Pomelo.EntityFrameworkCore.MySql - versão 6.0.2
+
+
+CRIAR PASTA Data -> Vai intermediar a ligação entre a base de dados e as entidades da aplicação
+Data-> class FilmeContext
+```
+public class FilmeContext : DbContext//CLASSE QUE REMEDIA LIGAÇÃO FILME (ENTIDADE) <-> FILME (BD)
+{
+    //PROPRIEDADES
+
+    //PROPRIEDADE DE ACESSO AOS FILMES DA BD
+    public DbSet<Filme> Filmes{ get; set; }
+
+
+    //CONSTRUTOR QUE USA O CONSTRUTOR BASE (CONSTRUTOR DE DbContext)
+    public FilmeContext(DbContextOptions<FilmeContext> opts)
+    : base(opts)
+    {               
+               
+    }
+}
+```
+
+Configurar arquivo appsettings.json, considerando
+Servidor local, nome da base de dados filme, usuário root e senha root
+```
+"AllowedHosts": "*",
+"ConnectionStrings": {
+  "FilmeConnection": "server=localhost;database=filme;user=root;password=root"
+}
+```
+
+Configurar program.cs
+```
+using FilmesApi.Data;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+//VARIÁVEL PARA DEFINIÇÕES ABAIXO
+var connectionString = builder.Configuration.GetConnectionString("FilmeConnection");
+
+builder.Services.AddDbContext<FilmeContext>(opts =>
+opts.UseMySql(connectionString,
+              ServerVersion.AutoDetect(connectionString)));
+```
+CONFIGURAR  Models->Class Filme
+```
+public class Filme
+{
+    [Key]//CAMPO Id É A CHAVE DA ENTIDADE/TABELA
+    [Required]
+public int Id { get; set; }
+.
+.
+.
+}
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes
+_Add-Migration CriandoTabelaDeFilmes_ - Constrói a estrutura da tabela
+_Update-Database_ - aplica as mudanças na base de dados MySql
+
+
+Com a estrutura do BD criado e com a conexão com BD configurada no código, aplicar as mudanças para que o código efetivamente utilize essa conexão, na classe FilmeController
+```
+public class FilmeController : ControllerBase
+{
+    //LISTA DE FILMES (SUBSTITUÍDA PELA CONEXÃO COM BD)
+    //private static List<Filme> filmes = new List<Filme>();
+    //private static int id = 0;//VARIÁVEL QUE SERÁ ATRIBUÍDA AO CAMPO Id do objeto Filme
+
+    private FilmeContext _context;//VARIÁVEL DE CONEXÃO COM BD
+
+    public FilmeController(FilmeContext context)
+    {
+        _context = context;
+    }
+
+    //MÉTODO QUE ADICIONA UM OBJETO FILME À LISTA
+    [HttpPost] // DESIGNA QUE O MÉTODO ABAIXO INSERE INFORMAÇÕES NA APLICAÇÃO
+    public IActionResult AdicionaFilme([FromBody] Filme filme)
+    {                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
+
+        //filme.Id = id++;// 0, 1, 2....
+        //filmes.Add(filme);
+        _context.Filmes.Add(filme); //FILME ADICIONADO A BD
+        _context.SaveChanges(); //MUDANÇAS SALVAS NA BD
+        return CreatedAtAction(nameof(RecuperaFilmePorId), 
+                               new { id = filme.Id }, 
+                               filme);
+
+        //CreatedAtAction - MÉTODO PADRÃO REST - RETORNA O OBJETO ADICIONADO E O SEU CAMINHO
+        //nameof(RecuperaFilmePorId) new { id = filme.Id } - CAMINHO DO OBJETO CRIADO
+        //filme - OBJETO CRIADO
+    }
+
+
+    //MÉTODO QUE LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
+    //E MOSTRANDO OS PRÓXIMOS take FILMES
+    [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
+    public IEnumerable<Filme> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
+                                             [FromQuery] int take = 50) //SEM DEFINIR, take É 50
+    {
+        //return filmes.Skip(skip).Take(take);//LISTA DE FILMES
+        return _context.Filmes.Skip(skip).Take(take);//LISTA DE FILMES
+    }
+
+
+    //MÉTODO QUE RETORNA O PRIMEIRO FILME ENCONTRADO, DADO SEU ID
+    [HttpGet("{id}")]//MÉTODO ABAIXO USA O VERBO GET, MAS COM ID, DIFERENTE DO ACIMA
+    public IActionResult RecuperaFilmePorId(int id)
+    {      //IActionResult - TIPO DE OBJETO QUE VEM DA INTERFACE ControllerBase
+           //SERVE PARA GERAR RETORNOS QUE SÃO RESULTADOS DE REQUISIÇÃO
+           //NESSE CASO, NotFound() E Ok() SÃO MÉTODOS COM RETORNO DO TIPO IActionResult
+
+        //var filme = filmes.FirstOrDefault(filme => filme.Id == id);
+        var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
+        if (filme == null) return NotFound();//SE NÃO HOUVER RESULTADO - ERRO 404 - PADRÃO REST
+        return Ok(filme);//SE HOUVER RESULTADO - NORMAL - 200 OK
+    }
+}
+```
 
 
  
