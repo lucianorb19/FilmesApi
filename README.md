@@ -37,3 +37,21 @@ public class Filme
 }
 ```
 -Alt + Enter com mouse posicionado sobre o erro de importação de arquivo - constrói a importação automaticamente
+
+### TEORIA
+#### API - Application Programming Interface
+Uma interface de serviço - seguindo suas regras, a API disponibiliza serviços sem que o cliente precise se preocupar em como ela faz isso no servidor desse respectivo serviço.
+
+#### Rest - um tipo de arquitetura de API - um padrão. Uma API que segue esse padrão é chamada de Restful.
+
+
+### ESTRUTURA FRAMEWORK .NET 6.0
+#### Program - Onde a aplicação é iniciada, configurações, definições, dependências,... 
+
+#### WeatherForecast.cs - Modelo de API base
+
+#### Appsettings.Development.json e appsettings.json - definições de bancos de dados, senhas, usuários,...
+
+#### Controllers -> WeatherForecastController.cs - responsável por receber as requisições do usuário
+
+#### launchSettings.json -> profiles - define a url da aplicação
