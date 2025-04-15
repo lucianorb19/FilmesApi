@@ -102,3 +102,103 @@ Em launchSettings.json - MUDAR
 ```
 "launchBrowser": false, //BROWSER NÃO ABRE AUTOMATICAMENTE AO EXECUTAR A APLICAÇÃO
 ```
+
+### INSERÇÃO DE DADOS NA APLICAÇÃO - POST
+Criação de um método que adiciona um objeto filme na memória, dado um estrutura json passada pelo Post. Isso é definido pelo método adicionaFilme no controlador
+```
+private static int id = 0;//VARIÁVEL QUE SERÁ ATRIBUÍDA AO CAMPO Id do objeto Filme
+
+//MÉTODO QUE ADICIONA UM OBJETO FILME À LISTA
+[HttpPost] // DESIGNA QUE O MÉTODO ABAIXO INSERE INFORMAÇÕES NA APLICAÇÃO
+public void AdicionaFilme([FromBody] Filme filme)
+{                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
+            
+    filme.Id = id++;// 0, 1, 2....
+    filmes.Add(filme);
+            
+}
+```
+Porém, ao seguir o padrão Rest, sempre que algo for adicionado, é necessário, além da inserção, retornar para o usuário o objeto adicionado e o caminho para ele. Isso pode ser feito pelo método CreatedAtAction().
+```
+private static int id = 0;//VARIÁVEL QUE SERÁ ATRIBUÍDA AO CAMPO Id do objeto Filme
+
+//MÉTODO QUE ADICIONA UM OBJETO FILME À LISTA
+[HttpPost] // DESIGNA QUE O MÉTODO ABAIXO INSERE INFORMAÇÕES NA APLICAÇÃO
+public IActionResult AdicionaFilme([FromBody] Filme filme)
+{                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
+            
+    filme.Id = id++;// 0, 1, 2....
+    filmes.Add(filme);
+    return CreatedAtAction(nameof(RecuperaFilmePorId), 
+                           new { id = filme.Id }, 
+                           filme);
+
+    //CreatedAtAction - MÉTODO PADRÃO REST - RETORNA O OBJETO ADICIONADO E O SEU CAMINHO
+    //nameof(RecuperaFilmePorId) new { id = filme.Id } - CAMINHO DO OBJETO CRIADO
+    //filme - OBJETO CRIADO
+}
+```
+
+### VALIDAR DADOS DO USUÁRIO COM Data Annotations
+
+Validar a entrada de dados do usuário pode ser feita na própria classe em Models
+```
+using System.ComponentModel.DataAnnotations;
+namespace FilmesApi.Models;
+
+public class Filme
+{
+    [Required(ErrorMessage = "Título do filme obrigatório")]
+    [MaxLength(50, ErrorMessage = "Título do filme não pode exceder 50 caractéres")]
+    public string Titulo { get; set; }
+
+    [Required(ErrorMessage = "Gênero do filme obrigatório")]
+    [MaxLength(50, ErrorMessage = "Gênero do filme não pode exceder 50 caractéres")]
+    public string Genero { get; set; }
+
+    [Required(ErrorMessage = "Duração do filme obrigatória")]
+    [Range(50,600, ErrorMessage ="Duração do filme precisa ser de 50 minutos a 10H")]
+    public int Duracao { get; set; }//DURAÇÃO EM MINUTOS
+}
+```
+Assim, toda vez que um objeto Filme for usado, seus atributos/propriedades seguirão estas restrições de
+[Required] - atributo não pode ser vazio
+[MaxLength] ou [StringLength] - tamanho máximo da string
+[Range] - valor mínimo e máximo
+(ErrorMessage = “...”) - personaliza a mensgem de erro mostrada na tela
+
+
+### LEITURA DE DADOS NA APLICAÇÃO - GET
+
+### TODOS OS DADOS
+Utilizando a mesma classe (FilmeController), agora com um método que recebe HttpGet
+```
+[HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
+public IEnumerable<Filme> recuperaFilmes()
+{
+    return filmes;//LISTA DE FILMES
+}
+```
+
+### DADOS QUE CORRESPONDEM A UM CRITÉRIO
+Utilizando a mesma classe (FilmeController), agora com um método que recebe HttpGet e um parâmetro id
+```
+//MÉTODO QUE RETORNA O PRIMEIRO FILME ENCONTRADO, DADO SEU ID
+[HttpGet("{id}")]//MÉTODO ABAIXO USA O VERBO GET, MAS COM ID, DIFERENTE DO ACIMA
+public Filme? RecuperaFilmePorId(int id)
+{      //Filme? - NULLABLE - RETORNO PODE ASSUMIR VALOR NULL
+
+    return filmes.FirstOrDefault(filme => filme.Id == id);
+}
+```
+Mudada também a estrutura da classe filme
+```
+public int Id { get; set; }
+```
+
+
+
+ 
+
+
+
