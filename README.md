@@ -273,9 +273,9 @@ public int Id { get; set; }
 ```
 
 Executar as mudanças do código para a BD
-Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes
-_Add-Migration CriandoTabelaDeFilmes_ - Constrói a estrutura da tabela
-_Update-Database_ - aplica as mudanças na base de dados MySql
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes \**  
+_Add-Migration CriandoTabelaDeFilmes_ - Constrói a estrutura da tabela \**  
+_Update-Database_ - aplica as mudanças na base de dados MySql \**
 
 
 Com a estrutura do BD criado e com a conexão com BD configurada no código, aplicar as mudanças para que o código efetivamente utilize essa conexão, na classe FilmeController
