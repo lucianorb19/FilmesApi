@@ -45,7 +45,7 @@ Uma interface de serviço - seguindo suas regras, a API disponibiliza serviços 
 #### Rest - um tipo de arquitetura de API - um padrão. Uma API que segue esse padrão é chamada de Restful.
 
 
-### ESTRUTURA FRAMEWORK .NET 6.0
+### ESTRUTURA FRAMEWORK .NET 6.0 (CONSIDERANDO O PROJETO EXEMPLO INICIAL)
 #### Program - Onde a aplicação é iniciada, configurações, definições, dependências,... 
 
 #### WeatherForecast.cs - Modelo de API base
@@ -139,7 +139,7 @@ public IActionResult AdicionaFilme([FromBody] Filme filme)
 }
 ```
 
-### VALIDAR DADOS DO USUÁRIO COM Data Annotations
+### VALIDAR DADOS DO USUÁRIO COM _Data Annotations_
 
 Validar a entrada de dados do usuário pode ser feita na própria classe em Models
 ```
@@ -211,13 +211,13 @@ public IEnumerable<Filme> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR
 
 ### CONEXÃO COM BASE DE DADOS
 Downloads necessários
-Ferramentas -> Gerenciador de Pacotes NuGet- Gerenciar pacotes solução->Procurar-> Baixar
-Microsoft.EntityFrameworkCore - versão. 6.0.10
-MicrosoftEntityFrameworkCore.Tools versão. 6.0.10
-Pomelo.EntityFrameworkCore.MySql - versão 6.0.2
+Ferramentas -> Gerenciador de Pacotes NuGet- Gerenciar pacotes solução->Procurar-> Baixar  
+Microsoft.EntityFrameworkCore - versão. 6.0.10;  
+MicrosoftEntityFrameworkCore.Tools versão. 6.0.10;  
+Pomelo.EntityFrameworkCore.MySql - versão 6.0.2;  
 
 
-CRIAR PASTA Data -> Vai intermediar a ligação entre a base de dados e as entidades da aplicação
+CRIAR PASTA Data -> Vai intermediar a ligação entre a base de dados e as entidades da aplicação  
 Data-> class FilmeContext
 ```
 public class FilmeContext : DbContext//CLASSE QUE REMEDIA LIGAÇÃO FILME (ENTIDADE) <-> FILME (BD)
@@ -364,7 +364,8 @@ public class CreateFilmeDto//CLASSE QUE INTERMEDIA ENTRE Controll e Filme
 } 
 ```
 
-Para que seja possível usar essa classe DTO em FilmeController, baixar AutoMapper e AutoMapper.Extensions.Microsoft.DependencyInjection.
+Para que seja possível usar essa classe DTO em FilmeController, baixar  
+AutoMapper e AutoMapper.Extensions.Microsoft.DependencyInjection.  
 Em Program
 ```
 //AUTOMAPPER PODE SER USADO EM TODA A APLICAÇÃO
