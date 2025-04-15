@@ -1,5 +1,17 @@
 # FilmesApi
- Projeto de uma Web API desenvolvida com .NET 6
+ Projeto de uma Web API Restful desenvolvida com .NET 6  
+ A API é capaz de guardar, num banco de dados relacional, registros de filmes com:  
+ * Título;
+ * Gênero;
+ * Duração.
+
+ As operações que podem ser realizadas pela API são:  
+ * Inserção de filme na BD;
+ * Consulta a todos os filmes cadastrados;
+ * Consulta a um filme específico, dado seu ID;
+ * Atualização de todos os campos do filme;
+ * Atualização parcial dos campos do filme;
+ * Deleção.
 
  ## DOWNLOADS NECESSÁRIOS
  **_PARA O SISTEMA OPERACIONAL_**
