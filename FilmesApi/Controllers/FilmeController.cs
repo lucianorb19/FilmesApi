@@ -25,6 +25,7 @@ namespace FilmesApi.Controllers
             _mapper = mapper;
         }
 
+
         //MÉTODO QUE ADICIONA UM OBJETO FILME À LISTA
         [HttpPost] // DESIGNA QUE O MÉTODO ABAIXO INSERE INFORMAÇÕES NA APLICAÇÃO
         public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
@@ -50,11 +51,15 @@ namespace FilmesApi.Controllers
         //MÉTODO QUE LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
         //E MOSTRANDO OS PRÓXIMOS take FILMES
         [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
-        public IEnumerable<Filme> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
+        public IEnumerable<ReadFilmeDto> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
                                                  [FromQuery] int take = 50) //SEM DEFINIR, take É 50
         {
             //return filmes.Skip(skip).Take(take);//LISTA DE FILMES
-            return _context.Filmes.Skip(skip).Take(take);//LISTA DE FILMES
+            //return _context.Filmes.Skip(skip).Take(take);//LISTA DE FILMES
+            //RETORNO É UMA MAPPER DA LISTA DTO DO TIPO ReadFilmeDto
+            return _mapper.Map<List<ReadFilmeDto>>
+                                    (_context.Filmes.Skip(skip).Take(take));
+
         }
 
 
@@ -68,8 +73,10 @@ namespace FilmesApi.Controllers
             //var filme = filmes.FirstOrDefault(filme => filme.Id == id);
             var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
             if (filme == null) return NotFound();//SE NÃO HOUVER RESULTADO - ERRO 404 - PADRÃO REST
-            return Ok(filme);//SE HOUVER RESULTADO - NORMAL - 200 OK
+            var filmeDto = _mapper.Map<ReadFilmeDto>(filme);//O RETORNO É UM Dto
+            return Ok(filmeDto);//SE HOUVER RESULTADO - NORMAL - 200 OK
         }
+
 
         //MÉTODO QUE ATUALIZA UM FILME, DADO SEU ID, COM AS INFORMAÇÕES DO BODY
         //SE NÃO ENCONTRAR O FILME PELO ID - NOT FOUND
@@ -83,6 +90,7 @@ namespace FilmesApi.Controllers
             _context.SaveChanges();
             return NoContent(); //RETORNO REST PARA UPDATE (204 NoContent)
         }
+
 
         //MÉTODO QUE ATUALIZA PARCIALMENTE UM FILME, DADO SEU ID, COM AS INFORMAÇÕES DO BODY
         [HttpPatch("{id}")]//HttpPatch - DESIGNA UMA ATUALIZAÇÃO PARCIAL DO OBJETO
@@ -108,6 +116,17 @@ namespace FilmesApi.Controllers
             _mapper.Map(filmeParaAtualizar, filme);//filmeParaAtualizar É MAPEADO/ATUALIZADO PARA filme - MUDANÇA NO BANCO
             _context.SaveChanges();
             return NoContent(); //RETORNO REST PARA UPDATE (204 NoContent)
+        }
+
+
+        [HttpDelete("{id}")]//DESIGNA QUE A FUNÇÃO ABAIXO UTILIZARÁ DELEÇÃO
+        public IActionResult DeletaFilmes(int id)
+        {
+            var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
+            if (filme == null) return NotFound();
+            _context.Remove(filme);//DELETA O FILME
+            _context.SaveChanges();
+            return NoContent();
         }
 
 
