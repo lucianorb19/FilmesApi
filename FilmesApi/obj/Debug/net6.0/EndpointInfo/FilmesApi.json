@@ -46,10 +46,12 @@
         "tags": [
           "Filme"
         ],
+        "summary": "Método que lista vários filmes da aplicação",
         "parameters": [
           {
             "name": "skip",
             "in": "query",
+            "description": "Quantos filmes iniciais serão desconsiderados",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -59,6 +61,7 @@
           {
             "name": "take",
             "in": "query",
+            "description": "Quantos filmes serão mostrados",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -68,7 +71,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Em caso de leitura bem sucedida",
             "content": {
               "text/plain": {
                 "schema": {
@@ -104,10 +107,12 @@
         "tags": [
           "Filme"
         ],
+        "summary": "Método que retorna o primeiro filme encontrado, dado seu ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "Identificador único para cada filme",
             "required": true,
             "schema": {
               "type": "integer",
@@ -117,7 +122,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Em caso de leitura bem sucedida"
           }
         }
       },
@@ -125,10 +130,12 @@
         "tags": [
           "Filme"
         ],
+        "summary": "Método que atualiza um filme, dado seu id, \r\ncom as informações do body da requisição",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "Identificador único do filme",
             "required": true,
             "schema": {
               "type": "integer",
@@ -137,6 +144,7 @@
           }
         ],
         "requestBody": {
+          "description": "DTO usado pelo mapper para efetivar as mudanças na base de dados",
           "content": {
             "application/json-patch+json": {
               "schema": {
@@ -163,6 +171,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "204": {
+            "description": "Em caso de atualização bem sucedida"
           }
         }
       },
@@ -170,10 +181,12 @@
         "tags": [
           "Filme"
         ],
+        "summary": "Método que atualiza parcialmente um filme, dado seu id, \r\ncom as informações do body da requisição",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "Identificador único do filme",
             "required": true,
             "schema": {
               "type": "integer",
@@ -220,6 +233,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "204": {
+            "description": "Em caso de atualização bem sucedida"
           }
         }
       },
@@ -227,10 +243,12 @@
         "tags": [
           "Filme"
         ],
+        "summary": "Método que deleta um filme da base de dados",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "Identificador único do filme",
             "required": true,
             "schema": {
               "type": "integer",
@@ -241,6 +259,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "204": {
+            "description": "Em caso de atualização bem sucedida"
           }
         }
       }

@@ -100,6 +100,14 @@ namespace FilmesApi.Controllers
 
         //MÉTODO QUE ATUALIZA UM FILME, DADO SEU ID, COM AS INFORMAÇÕES DO BODY
         //SE NÃO ENCONTRAR O FILME PELO ID - NOT FOUND
+        /// <summary>
+        /// Método que atualiza um filme, dado seu id, 
+        /// com as informações do body da requisição
+        /// </summary>
+        /// <param name="id">Identificador único do filme</param>
+        /// <param name="filmeDto">DTO usado pelo mapper para efetivar as mudanças na base de dados</param>
+        /// <returns>IActionResult</returns>
+        /// <response code="204">Em caso de atualização bem sucedida</response>
         [HttpPut("{id}")]//HttpPut - DESIGNA UMA ATUALIZAÇÃO COMPLETA DO OBJETO
         public IActionResult AtualizaFilme(int id, [FromBody] UpdateFilmeDto filmeDto)
         {
@@ -113,6 +121,16 @@ namespace FilmesApi.Controllers
 
 
         //MÉTODO QUE ATUALIZA PARCIALMENTE UM FILME, DADO SEU ID, COM AS INFORMAÇÕES DO BODY
+        /// <summary>
+        /// Método que atualiza parcialmente um filme, dado seu id, 
+        /// com as informações do body da requisição
+        /// </summary>
+        /// <param name="id">Identificador único do filme</param>
+        /// <param name="filmeDto">JsonPatchDocument, que convertido 
+        /// para um DTO UpdateFilmeDto, é usado pelo mapper para efetivar
+        /// as mudanças na base de dados</param>
+        /// <returns>IActionResult</returns>
+        /// <response code="204">Em caso de atualização bem sucedida</response>
         [HttpPatch("{id}")]//HttpPatch - DESIGNA UMA ATUALIZAÇÃO PARCIAL DO OBJETO
         public IActionResult AtualizaFilmeParcial(int id, JsonPatchDocument<UpdateFilmeDto> patch)
         {                                                 //RECEBER NO PARÂMETRO UM patch DE ATUALIZAÇÃO
@@ -138,7 +156,16 @@ namespace FilmesApi.Controllers
             return NoContent(); //RETORNO REST PARA UPDATE (204 NoContent)
         }
 
-
+        /// <summary>
+        /// Método que deleta um filme da base de dados
+        /// </summary>
+        /// <param name="id">
+        /// Identificador único do filme
+        /// </param>
+        /// <returns>IActionResult</returns>
+        /// <response code="204">
+        ///Em caso de atualização bem sucedida
+        ///</response>  
         [HttpDelete("{id}")]//DESIGNA QUE A FUNÇÃO ABAIXO UTILIZARÁ DELEÇÃO
         public IActionResult DeletaFilmes(int id)
         {

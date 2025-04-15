@@ -43,21 +43,19 @@
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABUAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-11T17:23:12.074Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "FilmesApi",
+              "Title": "FilmesApi.csproj",
               "DocumentMoniker": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\FilmesApi.csproj",
               "RelativeDocumentMoniker": "FilmesApi\\FilmesApi.csproj",
               "ToolTip": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\FilmesApi.csproj",
               "RelativeToolTip": "FilmesApi\\FilmesApi.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-04-15T13:06:01.342Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-15T13:06:01.342Z"
             },
             {
               "$type": "Document",
@@ -69,8 +67,7 @@
               "RelativeToolTip": "FilmesApi\\Profiles\\FilmeProfile.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-15T12:14:00.172Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-15T12:14:00.172Z"
             },
             {
               "$type": "Document",
@@ -82,8 +79,7 @@
               "RelativeToolTip": "FilmesApi\\Data\\Dtos\\ReadFilmeDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-15T12:05:14.207Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-15T12:05:14.207Z"
             },
             {
               "$type": "Document",
@@ -93,7 +89,7 @@
               "RelativeDocumentMoniker": "FilmesApi\\Controllers\\FilmeController.cs",
               "ToolTip": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Controllers\\FilmeController.cs",
               "RelativeToolTip": "FilmesApi\\Controllers\\FilmeController.cs",
-              "ViewState": "AgIAAFUAAAAAAAAAAAAgwGMAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAUwKMAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-10T16:35:39.209Z",
               "EditorCaption": ""
