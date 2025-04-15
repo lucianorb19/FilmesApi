@@ -3,10 +3,10 @@
 
  ## DOWNLOADS NECESSÁRIOS
  **_PARA O SISTEMA OPERACIONAL_**
- VisualStudio Community 2022
-.NET 6.0.402
-MySQL Community 8.0.31 (MySQL Server e MySQLWorkbench)
-Postman - Versão mais recente
+ * VisualStudio Community 2022;
+* .NET 6.0.402;
+* MySQL Community 8.0.31 (MySQL Server e MySQLWorkbench);
+* Postman - Versão mais recente
 
 **_NO VISUAL STUDIO_**
 _Ferramentas -> Gerenciador de Pacotes NuGet- Gerenciar pacotes solução->Procurar-> Baixar_
