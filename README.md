@@ -20,8 +20,8 @@
 * MySQL Community 8.0.31 (MySQL Server e MySQLWorkbench);
 * Postman - Versão mais recente
 
-**_NO VISUAL STUDIO_**
-_Ferramentas -> Gerenciador de Pacotes NuGet- Gerenciar pacotes solução->Procurar-> Baixar_
+**_NO VISUAL STUDIO_**  
+_Ferramentas -> Gerenciador de Pacotes NuGet- Gerenciar pacotes solução->Procurar-> Baixar_  
 * Microsoft.EntityFrameworkCore - (v. 6.0.10);
 * MicrosoftEntityFrameworkCore.Tools (v. 6.0.10);
 * Pomelo.EntityFrameworkCore.MySql - (v. 6.0.2);
