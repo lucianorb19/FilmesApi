@@ -338,6 +338,83 @@ public class FilmeController : ControllerBase
 }
 ```
 
+### DTO - Data Transfer Object - Em Criar um Filme (adicionaFilme)
+
+Downloads necessários:  
+Ferramentas->Gerenciador de Pacotes Nuget->   
+AutoMapper (v. 12.0.0)  
+AutoMapper.Extensions.Microsoft.DependencyInjection (v.12.0.0)  
+
+Para que a classe Filmes fique menos exposta no contato com as requisições dos POSTs e GETs, é recomendável usar uma classe DTO, que vai intermediar a ligação entre a FilmeController e Filme, e vai, baseada no Model Filme, mostrar e fornecer informações para as requisições. Sendo assim, a nova classe FilmeDto fica em Data->Dtos-> Classe CreateFilmeDto
+```
+public class CreateFilmeDto//CLASSE QUE INTERMEDIA ENTRE Controll e Filme
+{
+
+    [Required(ErrorMessage = "Título do filme obrigatório")]
+    [StringLength(50, ErrorMessage = "Título do filme não pode exceder 50 caractéres")]
+    public string Titulo { get; set; }
+
+    [Required(ErrorMessage = "Gênero do filme obrigatório")]
+    [StringLength(50, ErrorMessage = "Gênero do filme não pode exceder 50 caractéres")]
+    public string Genero { get; set; }
+
+    [Required(ErrorMessage = "Duração do filme obrigatória")]
+    [Range(50, 600, ErrorMessage = "Duração do filme precisa ser de 50 minutos a 10H")]
+    public int Duracao { get; set; }//DURAÇÃO EM MINUTOS
+} 
+```
+
+Para que seja possível usar essa classe DTO em FilmeController, baixar AutoMapper e AutoMapper.Extensions.Microsoft.DependencyInjection.
+Em Program
+```
+//AUTOMAPPER PODE SER USADO EM TODA A APLICAÇÃO
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+Criar Profiles->FilmeProfile.cs, que vai ser a classe que vai possibilitar mapear um objeto CreateFilmeDto em Filme.
+
+using FilmesApi.Data.Dtos;
+using AutoMapper;
+using FilmesApi.Models;
+
+namespace FilmesApi.Profiles;
+
+public class FilmeProfile : Profile
+{
+    public FilmeProfile()
+    {
+        CreateMap<CreateFilmeDto, Filme>();
+    }
+}
+```
+
+E as devidas mudanças são feitas em FilmeController, dado que agora a classe usada nos parâmetros de AdicionaFilme é CreateFilmeDto, e não Filme.
+```
+private IMapper _mapper;//ATRIBUTO DTO Filme
+
+public FilmeController(FilmeContext context, IMapper mapper)
+{
+    _context = context;
+    _mapper = mapper;
+}
+
+//MÉTODO QUE ADICIONA UM OBJETO FILME À LISTA
+[HttpPost] // DESIGNA QUE O MÉTODO ABAIXO INSERE INFORMAÇÕES NA APLICAÇÃO
+public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
+{                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
+
+    //filme.Id = id++;// 0, 1, 2....
+    //filmes.Add(filme);
+            
+    //Objeto filme recebe um objeto Filme a partir do mapeamento de filmeDTO
+    Filme filme = _mapper.Map<Filme>(filmeDto);
+    _context.Filmes.Add(filme); //FILME ADICIONADO A BD
+    _context.SaveChanges(); //MUDANÇAS SALVAS NA BD
+    return CreatedAtAction(nameof(RecuperaFilmePorId), 
+                           new { id = filme.Id }, 
+                           filme);
+}
+```
+
 
  
 
