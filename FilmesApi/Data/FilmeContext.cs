@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore;//DbContext
 
 namespace FilmesApi.Data;
 
-public class FilmeContext : DbContext//CLASSE QUE REMEDIA LIGAÇÃO FILME (ENTIDADE) <-> FILME (BD)
+public class FilmeContext : DbContext//CLASSE QUE REMEDIA LIGAÇÃO CLASSES E BASE DE DADOS
 {
     //PROPRIEDADES
 
-    //PROPRIEDADE DE ACESSO AOS FILMES DA BD
+    //PROPRIEDADE DE ACESSO À BD
     public DbSet<Filme> Filmes{ get; set; }
+    public DbSet<Cinema> Cinemas{ get; set; }
 
 
     //CONSTRUTOR QUE USA O CONSTRUTOR BASE (CONSTRUTOR DE DbContext)
