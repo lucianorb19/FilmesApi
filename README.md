@@ -23,7 +23,7 @@
 **_NO VISUAL STUDIO_**  
 _Ferramentas -> Gerenciador de Pacotes NuGet- Gerenciar pacotes solução->Procurar-> Baixar_  
 * Microsoft.EntityFrameworkCore - (v. 6.0.10);
-* MicrosoftEntityFrameworkCore.Tools (v. 6.0.10);
+* Microsoft.EntityFrameworkCore.Tools (v. 6.0.10);
 * Pomelo.EntityFrameworkCore.MySql - (v. 6.0.2);
 * AutoMapper (v. 12.0.0);
 * AutoMapper.Extensions.Microsoft.DependencyInjection (v.12.0.0);
