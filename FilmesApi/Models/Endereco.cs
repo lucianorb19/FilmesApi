@@ -12,5 +12,8 @@ namespace FilmesApi.Models
         [Required]
         public int Numero { get; set; }
 
+        //PROPRIEDADE RELAÇÃO 1:1 CINEMA<->ENDEREÇO
+        public virtual Cinema Cinema { get; set; }
+
     }
 }
