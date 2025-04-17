@@ -62,7 +62,7 @@ namespace FilmesApi.Controllers
         /// </summary>
         /// <param name="skip"> Quantos filmes iniciais serão desconsiderados</param>
         /// <param name="take"> Quantos filmes serão mostrados</param>
-        /// <returns>IActionResult</returns>
+        /// <returns>IEnumerable</returns>
         /// <response code="200">Em caso de leitura bem sucedida</response>
         [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
         public IEnumerable<ReadFilmeDto> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0

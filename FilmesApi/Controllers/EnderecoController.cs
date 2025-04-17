@@ -2,11 +2,14 @@
 using FilmesApi.Data;
 using FilmesApi.Data.Dtos;
 using FilmesApi.Models;
+using FilmesApi.Profiles;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace FilmesApi.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]//DESIGNA A ROTA /endereco (VEM DO NOME DA CLASS)
     public class EnderecoController : ControllerBase
     {
         //PROPRIEDADES - ATRIBUTOS
@@ -30,12 +33,16 @@ namespace FilmesApi.Controllers
             Endereco endereco = _mapper.Map<Endereco>(enderecoDto);
             _context.Enderecos.Add(endereco);
             _context.SaveChanges();
-            return CreatedAtAction(
-                nameof(RecuperaEnderecosPorId), new { Id = endereco.Id }, endereco);
+            return CreatedAtAction(nameof(RecuperaEnderecosPorId), new { Id = endereco.Id }, endereco);
         }
 
 
         //MÉTODO QUE MOSTRA TODOS OS ENDEREÇOS CADASTRADOS
+        /// <summary>
+        /// Método que lista todos endereços da aplicação
+        /// </summary>
+        /// <returns>IEnumerable</returns>
+        /// <response code="200">Em caso de leitura bem sucedida</response>
         [HttpGet]
         public IEnumerable<ReadEnderecoDto> RecuperaEnderecos()
         {

@@ -166,7 +166,80 @@
         }
       }
     },
-    "/{id}": {
+    "/Endereco": {
+      "post": {
+        "tags": [
+          "Endereco"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnderecoDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnderecoDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnderecoDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnderecoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Endereco"
+        ],
+        "summary": "Método que lista todos endereços da aplicação",
+        "responses": {
+          "200": {
+            "description": "Em caso de leitura bem sucedida",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReadEnderecoDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReadEnderecoDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReadEnderecoDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Endereco/{id}": {
       "get": {
         "tags": [
           "Endereco"
@@ -528,6 +601,28 @@
           "nome": {
             "minLength": 1,
             "type": "string"
+          },
+          "enderecoId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateEnderecoDto": {
+        "required": [
+          "logradouro",
+          "numero"
+        ],
+        "type": "object",
+        "properties": {
+          "logradouro": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "numero": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -606,6 +701,27 @@
           "nome": {
             "type": "string",
             "nullable": true
+          },
+          "readEnderecoDto": {
+            "$ref": "#/components/schemas/ReadEnderecoDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReadEnderecoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "logradouro": {
+            "type": "string",
+            "nullable": true
+          },
+          "numero": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
