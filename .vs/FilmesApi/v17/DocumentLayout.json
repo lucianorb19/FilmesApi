@@ -3,8 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\luciano\\desktop\\filmesapi\\filmesapi\\models\\endereco.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\models\\endereco.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\luciano\\desktop\\filmesapi\\filmesapi\\models\\cinema.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\models\\cinema.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\luciano\\desktop\\filmesapi\\filmesapi\\controllers\\cinemacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\controllers\\cinemacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\luciano\\desktop\\filmesapi\\filmesapi\\data\\dtos\\readcinemadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\data\\dtos\\readcinemadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\luciano\\desktop\\filmesapi\\filmesapi\\profiles\\cinemaprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\profiles\\cinemaprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +35,66 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Endereco.cs",
+              "DocumentMoniker": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Models\\Endereco.cs",
+              "RelativeDocumentMoniker": "FilmesApi\\Models\\Endereco.cs",
+              "ToolTip": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Models\\Endereco.cs",
+              "RelativeToolTip": "FilmesApi\\Models\\Endereco.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T21:32:03.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Cinema.cs",
               "DocumentMoniker": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Models\\Cinema.cs",
               "RelativeDocumentMoniker": "FilmesApi\\Models\\Cinema.cs",
               "ToolTip": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Models\\Cinema.cs",
               "RelativeToolTip": "FilmesApi\\Models\\Cinema.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAArAAAAAAAAAA==",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-17T20:15:35.44Z",
+              "WhenOpened": "2025-04-17T21:31:55.132Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ReadCinemaDto.cs",
+              "DocumentMoniker": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Data\\Dtos\\ReadCinemaDto.cs",
+              "RelativeDocumentMoniker": "FilmesApi\\Data\\Dtos\\ReadCinemaDto.cs",
+              "ToolTip": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Data\\Dtos\\ReadCinemaDto.cs",
+              "RelativeToolTip": "FilmesApi\\Data\\Dtos\\ReadCinemaDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T21:29:46.237Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CinemaController.cs",
+              "DocumentMoniker": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Controllers\\CinemaController.cs",
+              "RelativeDocumentMoniker": "FilmesApi\\Controllers\\CinemaController.cs",
+              "ToolTip": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Controllers\\CinemaController.cs",
+              "RelativeToolTip": "FilmesApi\\Controllers\\CinemaController.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAYwCsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T21:28:31.025Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CinemaProfile.cs",
+              "DocumentMoniker": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Profiles\\CinemaProfile.cs",
+              "RelativeDocumentMoniker": "FilmesApi\\Profiles\\CinemaProfile.cs",
+              "ToolTip": "C:\\Users\\Luciano\\Desktop\\FilmesApi\\FilmesApi\\Profiles\\CinemaProfile.cs",
+              "RelativeToolTip": "FilmesApi\\Profiles\\CinemaProfile.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABAAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T21:15:05.817Z",
               "EditorCaption": ""
             }
           ]

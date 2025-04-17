@@ -702,7 +702,7 @@
             "type": "string",
             "nullable": true
           },
-          "readEnderecoDto": {
+          "endereco": {
             "$ref": "#/components/schemas/ReadEnderecoDto"
           }
         },

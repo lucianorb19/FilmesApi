@@ -36,7 +36,7 @@ namespace FilmesApi.Controllers
 
         //MÉTODO QUE MOSTRA TODOS OS CINEMAS DA APLICAÇÃO
         [HttpGet]
-        public IEnumerable<ReadCinemaDto> RecuperaCinemasDto()
+        public IEnumerable<ReadCinemaDto> RecuperaCinemas()
         {
             return _mapper.Map<List<ReadCinemaDto>>(
                 _context.Cinemas.ToList());

@@ -17,7 +17,7 @@
   },
   {
     "ContainingType": "FilmesApi.Controllers.CinemaController",
-    "Method": "RecuperaCinemasDto",
+    "Method": "RecuperaCinemas",
     "RelativePath": "Cinema",
     "HttpMethod": "GET",
     "IsController": true,

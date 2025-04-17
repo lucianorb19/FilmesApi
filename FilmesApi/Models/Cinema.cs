@@ -13,6 +13,8 @@ namespace FilmesApi.Models
 
         //PROPRIEDADES RELAÇÃO 1:1 CINEMA <-> ENDERECO
         public int EnderecoId { get; set; }
+        
+        //virtual
         public virtual Endereco Endereco { get; set; }
     }
 }

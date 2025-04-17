@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("FilmeConnection");
 
 builder.Services.AddDbContext<FilmeContext>(opts =>
-opts.UseMySql(connectionString,
+opts.UseLazyLoadingProxies().UseMySql(connectionString,
               ServerVersion.AutoDetect(connectionString)));
 
 //AUTOMAPPER PODE SER USADO EM TODA A APLICAÇÃO
