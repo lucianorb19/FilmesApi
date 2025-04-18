@@ -343,15 +343,15 @@
   {
     "ContainingType": "FilmesApi.Controllers.SessaoController",
     "Method": "RecuperaSessoesPorId",
-    "RelativePath": "Sessao",
-    "HttpMethod": "",
+    "RelativePath": "Sessao/{id}",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "id",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

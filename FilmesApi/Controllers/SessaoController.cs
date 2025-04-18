@@ -42,6 +42,7 @@ namespace FilmesApi.Controllers
 
 
         //MÉTODO QUE MOSTRA UMA SESSÃO, DADO SEU ID
+        [HttpGet("{id}")]
         public IActionResult RecuperaSessoesPorId(int id)
         {
             Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.Id == id);
