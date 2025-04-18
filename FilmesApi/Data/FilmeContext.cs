@@ -7,7 +7,7 @@ public class FilmeContext : DbContext//CLASSE QUE REMEDIA LIGAÇÃO CLASSES E BA
 {
     //PROPRIEDADES
 
-    //PROPRIEDADE DE ACESSO À BD
+    //PROPRIEDADE DE ACESSO À BD - TORNAM-SE NOMES DAS TABELAS
     public DbSet<Filme> Filmes{ get; set; }
     public DbSet<Cinema> Cinemas{ get; set; }
     public DbSet<Endereco> Enderecos{ get; set; }
