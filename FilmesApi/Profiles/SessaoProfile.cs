@@ -10,7 +10,6 @@ namespace FilmesApi.Profiles
         {
             CreateMap<CreateSessaoDto, Sessao>();
             CreateMap<Sessao, ReadSessaoDto>();
-
         }
     }
 }

@@ -370,28 +370,6 @@
           "Filme"
         ],
         "summary": "Método que lista vários filmes da aplicação",
-        "parameters": [
-          {
-            "name": "skip",
-            "in": "query",
-            "description": "Quantos filmes iniciais serão desconsiderados",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
-          },
-          {
-            "name": "take",
-            "in": "query",
-            "description": "Quantos filmes serão mostrados",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Em caso de leitura bem sucedida",
@@ -813,6 +791,13 @@
           },
           "endereco": {
             "$ref": "#/components/schemas/ReadEnderecoDto"
+          },
+          "sessoes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReadSessaoDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -853,6 +838,13 @@
           "horaDaConsulta": {
             "type": "string",
             "format": "date-time"
+          },
+          "sessoes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReadSessaoDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

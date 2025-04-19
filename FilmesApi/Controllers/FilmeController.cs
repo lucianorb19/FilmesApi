@@ -65,16 +65,21 @@ namespace FilmesApi.Controllers
         /// <returns>IEnumerable</returns>
         /// <response code="200">Em caso de leitura bem sucedida</response>
         [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
-        public IEnumerable<ReadFilmeDto> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
-                                                 [FromQuery] int take = 50) //SEM DEFINIR, take É 50
+        public IEnumerable<ReadFilmeDto> RecuperaFilmes() //SEM DEFINIR, take É 50
         {
-            //return filmes.Skip(skip).Take(take);//LISTA DE FILMES
-            //return _context.Filmes.Skip(skip).Take(take);//LISTA DE FILMES
-            //RETORNO É UMA MAPPER DA LISTA DTO DO TIPO ReadFilmeDto
-            return _mapper.Map<List<ReadFilmeDto>>
-                                    (_context.Filmes.Skip(skip).Take(take));
-
+            return _mapper.Map<List<ReadFilmeDto>>(_context.Filmes.ToList());
         }
+
+        //public IEnumerable<ReadFilmeDto> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
+        //                                         [FromQuery] int take = 50) //SEM DEFINIR, take É 50
+        //{
+        //return filmes.Skip(skip).Take(take);//LISTA DE FILMES
+        //return _context.Filmes.Skip(skip).Take(take);//LISTA DE FILMES
+        //RETORNO É UMA MAPPER DA LISTA DTO DO TIPO ReadFilmeDto
+        //    return _mapper.Map<List<ReadFilmeDto>>
+        //                            (_context.Filmes.Skip(skip).Take(take));
+
+        //}
 
 
         //MÉTODO QUE RETORNA O PRIMEIRO FILME ENCONTRADO, DADO SEU ID
