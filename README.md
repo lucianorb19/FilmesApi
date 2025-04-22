@@ -1366,7 +1366,7 @@ _https://localhost:7114/filme?skip=0&take=50&nomeCinema=Cinema%20Max_
 
 
 ### DOCUMENTAÇÃO DA APLICAÇÃO
-A documentação, pelo swagger, pode ser feita através dos próprios métodos, e consultada, pela URL do localhost [ Documentação Swagger ] (http://localhost:5125/Swagger/index.html)
+A documentação, pelo swagger, pode ser feita através dos próprios métodos, e consultada, pela URL do localhost [ Documentação Swagger ] ( http://localhost:5125/Swagger/index.html )
 
 #### Habilitar o Swagger
 Program->
