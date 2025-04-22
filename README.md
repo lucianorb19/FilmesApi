@@ -1,17 +1,58 @@
 # FilmesApi
- Projeto de uma Web API Restful desenvolvida com .NET 6  
- A API é capaz de guardar, num banco de dados relacional, registros de filmes com:  
+ Projeto de uma Web API Restful desenvolvida com .NET 6 para um sistema de Cinemas.
+ A API é capaz de realizar operações básicas - CRUD, num banco de dados relacional, envolvendo as entidades Filmes, Cinemas, Endereços e Sessões.  
+
+
+ ## ENTIDADES / MODELS
+ ### FILME
+ * Id (_gerado pelo sistema_);
  * Título;
  * Gênero;
  * Duração.
 
- As operações que podem ser realizadas pela API são:  
- * Inserção de filme na BD;
- * Consulta a todos os filmes cadastrados;
- * Consulta a um filme específico, dado seu ID;
- * Atualização de todos os campos do filme;
- * Atualização parcial dos campos do filme;
- * Deleção.
+ ### ENDEREÇO
+ * Id (_gerado pelo sistema_);
+ * Logradouro;
+ * Número.
+
+ ### CINEMA
+ * Id (_gerado pelo sistema_);
+ * Nome;
+ * EnderecoId (_relação com Endereço_).
+
+ ### SESSÃO
+ * FilmeId (_relação com Filme_);
+ * CinemaId (_relação com Cinema_)
+
+
+## MÉTODOS E OPERAÇÕES  
+### FILME
+ * AdicionaFilme - _Adiciona um filme à base de dados_;
+ * RecuperaFilmes - _Lista todos os filmes da aplicação_;
+ * RecuperaFilmePorId - _Retorna um filme, dado seu Id_;
+ * AtualizaFilme - _Atualiza completamente um filme, dado seu Id_;
+ * AtualizaFilmeParcial - _Atualiza parcialmente um filme, dado seu Id_;
+ * DeletaFilmes - _Deleta um filme, dado seu Id_.
+
+ ### ENDEREÇO
+ * AdicionaEndereco - _Adiciona um endereço à base de dados_;
+ * RecuperaEnderecos - _Retorna todos endereços cadastrados_;
+ * RecuperaEnderecosPorId - _Retorna um endereço, dado seu Id_;
+ * AtualizaEndereco - _Atualiza um endereço, dado seu Id_;
+ * DeletaEndereco - _Deleta um endereço, dado seu Id_.
+
+ ### CINEMA
+ * AdicionaCinema - _Adiciona um cinema à base de dados_;
+ * RecuperaCinemas - _Retorna todos os cinemas da aplicação_;
+ * RecuperaCinemasPorId - _Retorna um cinema, dado seu Id_;
+ * AtualizaCinema - _Atualiza um cinema, dado seu Id_;
+ * DeleteCinema - _Deleta um cinema, dado seu Id_.
+
+ ### SESSÃO
+ * AdicionaSessao - _Adiciona uma sessão à base de dados_;
+ * RecuperaSessoes - _Retorna todas as sessões cadastradas_;
+ * RecuperaSessoesPorId - _Retorna uma sessão, dado seu Id_;
+
 
  ## DOWNLOADS NECESSÁRIOS
  **_PARA O SISTEMA OPERACIONAL_**
@@ -553,39 +594,783 @@ FilmeProfile->Adicionar
  CreateMap<Filme, ReadFilmeDto>();
 ```
 
-### DOCUMENTAÇÃO DA APLICAÇÃO
-A documentação, pelo swagger, pode ser feita através dos próprios métodos
-FilmeController->
+
+## RELACIONANDO ENTIDADES
+### ENTIDADE CINEMA
+Models-> Cinema.cs
 ```
-//DOCUMENTAÇÃO SWAGGER
-/// <summary>
-/// Adiciona um filme à base de dados.
-/// </summary>
-/// <param name="filmeDto">DTO usado pelo mapper para efetivar as mudanças na base de dados</param>
-/// <returns>IActionResult</returns>
-/// <response code="201">Em caso de inserção bem sucedida</response>
-[HttpPost]
-[ProducesResponseType(StatusCodes.Status201Created)]
-public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
-{                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
+public class Cinema
+{
+    [Key]
+    [Required]
+    public int Id { get; set; }
 
-    //filme.Id = id++;// 0, 1, 2....
-    //filmes.Add(filme);
-            
-    //Objeto filme recebe um objeto Filme a partir do mapeamento de filmeDTO
-    Filme filme = _mapper.Map<Filme>(filmeDto);
-    _context.Filmes.Add(filme); //FILME ADICIONADO A BD
-    _context.SaveChanges(); //MUDANÇAS SALVAS NA BD
-    return CreatedAtAction(nameof(RecuperaFilmePorId), 
-                           new { id = filme.Id }, 
-                           filme);
-
-    //CreatedAtAction - MÉTODO PADRÃO REST - RETORNA O OBJETO ADICIONADO E O SEU CAMINHO
-    //nameof(RecuperaFilmePorId) new { id = filme.Id } - CAMINHO DO OBJETO CRIADO
-    //filme - OBJETO CRIADO
+    [Required(ErrorMessage = "Campo nome é obrigatório")]
+    public string Nome { get; set; }
 }
+```
 
+Data->Dtos->
+CreateCinemaDto - Nome (required)
+```
+public class CreateCinemaDto
+{
+    [Required(ErrorMessage = "Campo nome é obrigatório")]
+    public string Nome { get; set; }
+}
+```
+
+ReadCinemaDto - Id e Nome
+```
+public class ReadCinemaDto
+{
+    public int Id { get; set; }
+
+    public string Nome { get; set; }
+}
+```
+
+UpdateCinemaDto - Nome (required)
+```
+public class UpdateCinemaDto
+{
+    [Required(ErrorMessage = "Campo nome é obrigatório")]
+    public string Nome { get; set; }
+}
+```
+
+FilmeContext -> adicionar propriedade de conexão com tabela Cinemas
+```
+public DbSet<Cinema> Cinemas{ get; set; }
+```
+
+Profiles-> criar classe CinemaProfile
+```
+using AutoMapper;
+using FilmesApi.Data.Dtos;
+using FilmesApi.Models;
+
+namespace FilmesApi.Profiles
+{
+    public class CinemaProfile : Profile
+    {
+        public CinemaProfile()
+        {
+            CreateMap<CreateCinemaDto, Cinema>();
+            CreateMap<Cinema, ReadCinemaDto>();
+            CreateMap<UpdateCinemaDto, Cinema>();
+
+        }
+    }
+}
+```
+
+CinemaController
+```
+using AutoMapper;
+using FilmesApi.Data.Dtos;
+using FilmesApi.Data;
+using FilmesApi.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace FilmesApi.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class CinemaController : ControllerBase
+    {
+        //PROPRIEDADES-ATRIBUTOS
+        private FilmeContext _context;
+        private IMapper _mapper;
+        
+        //CONSTRUTOR
+        public CinemaController(FilmeContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        //DEMAIS MÉTODOS
+        //MÉTODO QUE ADICIONA UM CINEMA AO BANCO
+        [HttpPost]
+        public IActionResult AdicionaCinema([FromBody] CreateCinemaDto cinemaDto)
+        {
+            Cinema cinema = _mapper.Map<Cinema>(cinemaDto);
+            _context.Cinemas.Add(cinema);
+            _context.SaveChanges();
+            return CreatedAtAction(
+                nameof(RecuperaCinemasPorId), new { Id = cinema.Id }, cinemaDto);
+        }
+
+
+        //MÉTODO QUE MOSTRA TODOS OS CINEMAS DA APLICAÇÃO
+        [HttpGet]
+        public IEnumerable<ReadCinemaDto> RecuperaCinemasDto()
+        {
+            return _mapper.Map<List<ReadCinemaDto>>(
+                _context.Cinemas.ToList());
+        }
+
+
+        //MÉTODO QUE RETORNA UM CINEMA DADO SEU ID
+        [HttpGet("{id}")]
+        public IActionResult RecuperaCinemasPorId(int id)
+        {
+            Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
+            if (cinema != null)
+            {
+                ReadCinemaDto cinemaDto = _mapper.Map<ReadCinemaDto>(cinema);
+                return Ok(cinemaDto);
+            }
+            return NotFound();
+        }
+
+
+        //MÉTODO QUE ATUALIZA UM OBJETO CINEMA POR COMPLETO
+        //NÃO HÁ UPDATE COM VERBO PATCH, CONSIDERANDO QUE CINEMA SÓ TEM UM CAMPO
+        //MODIFICÁVEL - NOME
+        [HttpPut("{id}")]
+        public IActionResult AtualizaCinema(int id, [FromBody] UpdateCinemaDto cinemaDto)
+        {
+            Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
+            if (cinema == null) return NotFound();
+            _mapper.Map(cinemaDto, cinema);//REALIZAÇÃO DO UPDATE NA BASE
+            _context.SaveChanges();
+            return NoContent();
+        }
+
+
+        //MÉTODO QUE DELETA UM CINEMA, DADO SEU ID
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCinema(int id)
+        {
+            Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
+            if (cinema == null) return NotFound();
+            _context.Remove(cinema);
+            _context.SaveChanges();
+            return NoContent();
+        }
+    }
+}
+```
+
+### ENTIDADE ENDEREÇO
+Model
+```
+public class Endereco
+{
+    [Key]
+    [Required]
+    public int Id { get; set; }
+    [Required]
+    public string Logradouro { get; set; }
+    [Required]
+    public int Numero { get; set; }
+}
+```
+
+DTOs
+CreateEnderecoDto
+```
+public class CreateEnderecoDto
+{
+    [Required]
+    public string Logradouro { get; set; }
+    [Required]
+    public int Numero { get; set; }
+}
+```
+
+ReadEnderecoDto
+```
+public class ReadEnderecoDto
+{
+    public int Id { get; set; }
+    public string Logradouro { get; set; }
+    public int Numero { get; set; }
+}
+```
+
+UpdateEnderecoDto
+```
+public class UpdateEnderecoDto
+{
+    [Required]
+    public string Logradouro { get; set; }
+        
+    [Required]
+    public int Numero { get; set; }
+}
+```
+
+FilmeContext-> Enderecos
+```
+public DbSet<Endereco> Enderecos{ get; set; }
+```
+
+EnderecoProfile
+```
+using AutoMapper;
+using FilmesApi.Data.Dtos;
+using FilmesApi.Models;
+
+namespace FilmesApi.Profiles
+{
+    public class EnderecoProfile : Profile
+    {
+        public EnderecoProfile()
+        {
+            CreateMap<CreateEnderecoDto, Endereco>();
+            CreateMap<Endereco, ReadEnderecoDto>();
+            CreateMap<UpdateEnderecoDto, Endereco>();
+        }
+    }
+}
+```
+
+EnderecoController
+```
+using AutoMapper;
+using FilmesApi.Data;
+using FilmesApi.Data.Dtos;
+using FilmesApi.Models;
+using Microsoft.AspNetCore.Mvc;
+
+
+namespace FilmesApi.Controllers
+{
+    public class EnderecoController : ControllerBase
+    {
+        //PROPRIEDADES - ATRIBUTOS
+        private FilmeContext _context;
+        private IMapper _mapper;
+
+
+        //CONSTRUTOR
+        public EnderecoController(FilmeContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+
+        //DEMAIS MÉTODOS
+        //MÉTODO QUE ADICIONA UM ENDEREÇO A BD
+        [HttpPost]
+        public IActionResult adicionaEndereco([FromBody] CreateEnderecoDto enderecoDto)
+        {
+            Endereco endereco = _mapper.Map<Endereco>(enderecoDto);
+            _context.Enderecos.Add(endereco);
+            _context.SaveChanges();
+            return CreatedAtAction(
+                nameof(RecuperaEnderecosPorId), new { Id = endereco.Id }, endereco);
+        }
+
+
+        //MÉTODO QUE MOSTRA TODOS OS ENDEREÇOS CADASTRADOS
+        [HttpGet]
+        public IEnumerable<ReadEnderecoDto> RecuperaEnderecos()
+        {
+            return _mapper.Map<List<ReadEnderecoDto>>(_context.Enderecos);
+        }
+
+
+        //MÉTODO QUE MOSTRA UM ENDEREÇO, DADO SEU ID
+        [HttpGet("{id}")]
+        public IActionResult RecuperaEnderecosPorId(int id)
+        {
+            Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
+            if(endereco != null)
+            {
+                ReadEnderecoDto enderecoDto = _mapper.Map<ReadEnderecoDto>(endereco);
+                return Ok(enderecoDto);
+            }
+            return NotFound();
+        }
+
+
+        //MÉTODO QUE ATUALIZA TODO UM ENDEREÇO, DADO SEU ID
+        [HttpPut("{id}")]
+        public IActionResult AtualizaEndereco(int id, [FromBody] UpdateEnderecoDto enderecoDto)
+        {
+            Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
+            if(endereco == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(enderecoDto, endereco);//ATUALIZA NO BD
+            _context.SaveChanges();
+            return NoContent();
+        }
+
+
+        //MÉTODO QUE DELETA UM ENDEREÇO, DADO SEU ID
+        [HttpDelete("{id}")]
+        public IActionResult DeletaEndereco(int id)
+        {
+            Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
+            if (endereco == null)
+            {
+                return NotFound();
+            }
+            _context.Remove(endereco);
+            _context.SaveChanges();
+            return NoContent();
+        }
+    }
+}
+```
+
+## RELAÇÃO ENTRE ENDIDADES
+### CINEMA <-> ENDERECO - 1:1  
+(Cinema não existe sem endereço / Endereço existe sem Cinema)
+
+#### Downloads necessários
+
+Ferramentas->Gerenciador de Pacotes Nuget->Gerenciar pacotes para solução->  
+Microsoft.EntityFramework.Proxies
+
+Mudar models Cinema e Endereço
+
+Model Cinema
+```
+//PROPRIEDADES RELAÇÃO 1:1 CINEMA <-> ENDERECO
+//TABELA CINEMA TEM DUAS COLUNAS - UMA SENDO O ID DO ENDEREÇO E OUTRA SENDO O ENDEREÇO EM SI
+public int EnderecoId { get; set; }
+public virtual Endereco Endereco { get; set; }
+```
+
+
+Model Endereco
+```
+//PROPRIEDADE RELAÇÃO 1:1 CINEMA<->ENDEREÇO
+public virtual Cinema Cinema { get; set; }
+```
+* Lembrar: a entidade com a chave estrangeira - guarda a propriedade ...Id {get;set;}
+* Cinema contém uma chave estrangeira para Endereço, logo, Cinema fica com EnderecoId;
+
+Mudar CreateCinemaDto
+```
+public int EnderecoId { get; set; }
+```
+
+Mudar ReadCinemaDto
+```
+public ReadEnderecoDto ReadEnderecoDto { get; set; }
+```
+
+Executar as mudanças do código para a BD  
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration Relacao-Cinema-Endereco - Constrói a estrutura da tabela    
+Update-Database - aplica as mudanças na base de dados MySql  
+
+Mudar Program - linha 10
+```
+builder.Services.AddDbContext<FilmeContext>(opts =>
+opts.UseLazyLoadingProxies().UseMySql(connectionString,
+              ServerVersion.AutoDetect(connectionString)));
+```
+
+Até o momento, sempre que um cinema é adicionado, ele não tem endereço, isso porque mesmo configurando tudo acima, ainda falta configurar o CinemaProfile, dado que sem essa configuração, a função do AutoMap não consegue relacionar o Cinema com o Endereço
+
+Mudar CinemProfile->
+```
+public CinemaProfile()
+{
+    CreateMap<CreateCinemaDto, Cinema>();
+
+    //USADO NO RecuperaCinemas - CONFIGURAR COMO O AUTOMAPPER FUNCIONA
+    CreateMap<Cinema, ReadCinemaDto>().ForMember(cinemaDto => cinemaDto.ReadEnderecoDto,
+        opt => opt.MapFrom(cinema => cinema.Endereco));
+    //ForMember(cinemaDto  - PARA O MEMBRO DO DESTINO, QUE É DO TIPO ReadCinemaDto
+    //=> cinemaDto.ReadEnderecoDto - ACESSANDO O CAMPO ReadEnderecoDto, QUE É UM CAMPO DESSE OBJETO
+    //opt => opt.MapFrom(cinema => cinema.Endereco - QUERO PEGAR, DA ORIGEM, O CAMPO Endereco
+            
+    CreateMap<UpdateCinemaDto, Cinema>();
+}
+```
+
+Dessa form, as entidades Cinema e Endereco ficam relacionadas corretamente, considerando que:  
+*  Relacionamento 1:1;
+* O endereço já existe antes de instanciar o cinema;
+* A relação se dá no momento da inserção do cinema, que no campo EnderecoId, guarda uma referência ao campo Id da entidade Endereco.
+
+### ENTIDADE SESSÃO E SUA RELAÇÃO COM FILME - 1:N
+* Uma sessão tem um filme. Um filme pode estar ao mesmo tempo em diversas sessões;
+* Não existe sessão sem filme. Existe filme sem sessão.
+
+Model Sessao
+```
+public class Sessao
+{
+    [Key]
+    [Required]
+    public int Id { get; set; }
+
+    //RELAÇÃO SESSÃO<->FILME
+    [Required]
+    public int FilmeId { get; set; }
+    public virtual Filme Filme { get; set; }
+}
+```
+
+DTOs
+CreateSessaoDto
+```
+public class CreateSessaoDto
+{
+    public int FilmeId { get; set; }
+}
+```
+
+ReadSessaoDto
+```
+public class ReadSessaoDto
+{
+    public int Id { get; set; }
+}
+```
+
+SessaoProfile
+```
+public class SessaoProfile : Profile
+{
+    public SessaoProfile()
+    {
+        CreateMap<CreateSessaoDto, Sessao>();
+        CreateMap<Sessao, ReadSessaoDto>();
+
+    }
+}
+```
+
+FilmeContext->Adicionar
+```
+public DbSet<Sessao> Sessoes{ get; set; }
+```
+
+SessaoController
+```
+namespace FilmesApi.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class SessaoController : ControllerBase
+    {
+        //PROPRIEDADES
+        private FilmeContext _context;
+        private IMapper _mapper;
+
+
+        //CONSTRUTOR
+        public SessaoController(FilmeContext context, IMapper mapper) //ctor
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        //MÉTODO QUE ADICIONA UMA SESSÃO AO SISTEMA
+        [HttpPost]
+        public IActionResult AdicionaSessao(CreateSessaoDto dto)
+        {
+            Sessao sessao = _mapper.Map<Sessao>(dto);
+            _context.Sessoes.Add(sessao);
+            _context.SaveChanges();
+            return CreatedAtAction(nameof(RecuperaSessoesPorId), new { Id = sessao.Id }, sessao);
+        }
+
+
+        //MÉTODO QUE MOSTRA AS SESSÕES DO SISTEMA
+        [HttpGet]
+        public IEnumerable<ReadSessaoDto> RecuperaSessoes()
+        {
+            return _mapper.Map<List<ReadSessaoDto>>(_context.Sessoes.ToList());
+        }
+
+
+        //MÉTODO QUE MOSTRA UMA SESSÃO, DADO SEU ID
+        public IActionResult RecuperaSessoesPorId(int id)
+        {
+            Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.Id == id);
+            if(sessao != null)
+            {
+                ReadSessaoDto sessaoDto = _mapper.Map<ReadSessaoDto>(sessao);
+                return Ok(sessaoDto);
+            }
+            return NotFound();
+        }
+    }
+}
+```
+
+Mudança Model Filme
+```
+//RELAÇÃO SESSÃO<->FILME
+//FILME PODE ESTAR AO MESMO TEMPO EM 1 OU MUITAS SESSÕES
+//COLEÇÃO DE SESSÕES
+public virtual ICollection<Sessao> Sessoes { get; set; }
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration Relacao-Sessao-Filme - Constrói a estrutura da tabela  
+Update-Database - aplica as mudanças na base de dados MySql  
+
+Até aqui, as entidades estão relacionadas corretamente, mas ainda faltam algumas melhorias, como:
+* Mostrar na consulta de sessões, qual filme dessa sessão;
+* Mostar na consulta de filmes, em quais sessões cada filme está;
+
+### RELACIONANDO ENTIDADE SESSAO<->CINEMA 1:N
+* Um cinema passa várias sessões. Cada sessão só acontece em um cinema.
+
+Mudar Model Sessao -> Adicionar
+```
+//RELAÇÃO CINEMA<->SESSAO
+[Required]
+public int CinemaId { get; set; }
+public virtual Cinema Cinema { get; set; }
+```
+
+Mudar Model Cinema -> Adicionar
+```
+//RELAÇÃO 1:N CINEMA<-> SESSÃO
+public virtual ICollection<Sessao> Sessoes { get; set; }
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration Relacao-Cinema-Sessao- Constrói a estrutura da tabela  
+Update-Database - aplica as mudanças na base de dados MySql  
+
+**Problema: A chave estrangeira CinemaId, em Sessao, começa com 0 por padrão, enquanto a chave primária Id em Cinema começa com 1, o que impede o funcionamento da chave estrangeira.**
+
+Para resolver:
+1. Remover a migration no console Nuget
+Remove-Migration
+
+2. Alterar a tabela Sessoes e remover a coluna CinemaId - no MySql Workbench
+alter table sessoes drop column CinemaId;
+
+3. Permitir que, na tabela Sessoes, a coluna CinemaId possar, ser nula, retirando o “[Required]” e tornando o atribtuo nullable
+```
+//RELAÇÃO CINEMA<->SESSAO
+public int? CinemaId { get; set; }
+public virtual Cinema Cinema { get; set; }
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration Relacao-Cinema-Sessao- Constrói a estrutura da tabela  
+Update-Database - aplica as mudanças na base de dados MySql
+
+Até aqui, tudo funciona, mas a consulta dos filmes gera erro, porque em FilmeController, o método RecuperaFilmes, no seu retorno, por usar
+_context.Filmes retorna um Queryble, que não pode ser convertido pelo AutoMapper.Isso se resolve colocando .ToList() ao final dele.
+
+
+### MELHORIAS
+Ao consultar filmes, mostrar as sessões relacionadas
+ReadFilmeDto->Adicionar
+```
+public ICollection<ReadSessaoDto> Sessoes{ get; set; }
+```
+
+Ao consultar cinemas, mostrar as sessões relacionadas
+ReadCinemaDto->Adicionar
+```
+public ICollection<ReadSessaoDto> Sessoes{ get; set; }
+```
+
+Configurar o AutoMapper para conseguir mapear, em Filmes, as Sessões relacionadas
+FilmeProfile
+```
+CreateMap<Filme, ReadFilmeDto>()
+    .ForMember(filmeDto => filmeDto.Sessoes, 
+    opt => opt.MapFrom(filme => filme.Sessoes));
+//ForMember(filmeDto  - PARA O MEMBRO DO DESTINO, QUE É DO TIPO ReadFilmeDto
+//=> cinemaDto.Sessoes - ACESSANDO O CAMPO Sessoes, QUE É UM CAMPO DESSE OBJETO
+//opt => opt.MapFrom(filme => filme.Sessoes - QUERO PEGAR, DA ORIGEM, O CAMPO Sessoes
+```
+
+Configurar o AutoMapper para conseguir mapear, em Cinemas, as Sessões relacionadas
+CinemaProfile
+```
+//USADO NO CinemaController->RecuperaCinemas - CONFIGURAR COMO O AUTOMAPPER FUNCIONA
+CreateMap<Cinema, ReadCinemaDto>()
+    .ForMember(cinemaDto => cinemaDto.Endereco,
+    opt => opt.MapFrom(cinema => cinema.Endereco))
+    .ForMember(cinemaDto => cinemaDto.Sessoes,
+    opt => opt.MapFrom(cinema => cinema.Sessoes));
+//ForMember(cinemaDto  - PARA O MEMBRO DO DESTINO, QUE É DO TIPO ReadCinemaDto
+//=> cinemaDto.Endereco - ACESSANDO O CAMPO Endereco, QUE É UM CAMPO DESSE OBJETO
+//opt => opt.MapFrom(cinema => cinema.Endereco - QUERO PEGAR, DA ORIGEM, O CAMPO Endereco
+```
+
+
+### RELACIONANDO ENTIDADE FILME<->CINEMA N:N
+Relacionamentos N:N são mapeados com uma tabela separada para eles. No nosso sistema, ao invés de criar uma tabela com essas informações, usaremos a tabela Sessao, que já guarda as informações que relacionam Filme e Cinema.
+Para que a entidade Sessão funcione corretamente, nesse caso, ela passar por algumas mudanças
+
+Drop database no WorkBench para evitar conflitos
+
+Tornar o campo Model Sessao->FilmeId nullable
+```
+//RELAÇÃO SESSÃO<->FILME
+public int? FilmeId { get; set; }
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration “FilmeId nulo”    
+Update-Database  
+
+Retirar do model Sessao o campo Id
+
+Construir, em FilmeContext, o código que vai relacionar os campos FilmeId e CinemaId como chave primária de Sessao e vai definir como a tabela Sessao se relaciona com Filme e Cinema
+```
+//DEMAIS MÉTODOS
+//MÉTODO QUE CRIA A CHAVE PRIMÁRIA DE SESSOES - COMPOSTA por FilmeId + CinemaId
+//E QUE RELACIONA A TABELA SESSOES COM FILME E CINEMA (AGORA QUE ELA É A TABLE QUE GUARDA A
+//RELAÇÃO N:N ENTRE FILME E CINEMA
+protected override void OnModelCreating(ModelBuilder builder)
+{
+    //CADA SESSÃO TEM COMO CHAVE PRIMÁRIA FilmeId+CinemaId
+    builder.Entity<Sessao>().HasKey(sessao => new { sessao.FilmeId, sessao.CinemaId });
+
+    //COMO A SESSÃO SE RELACIONA COM CINEMA? 
+    builder.Entity<Sessao>().HasOne(sessao => sessao.Cinema) //1 SESSÃO -> 1 CINEMA
+                            .WithMany(cinema => cinema.Sessoes) //1 CINEMA -> 1 OU MUITAS SESSÕES
+                            .HasForeignKey(sessao => sessao.CinemaId); //CHAVE ESTRANGEIRA: SESSAO->CinemaId PARA CHAVE PRIMÁRIA DE Cinema
+
+    //COMO A SESSÃO SE RELACIONA COM FILME? 
+    builder.Entity<Sessao>().HasOne(sessao => sessao.Filme) //1 SESSÃO -> 1 FILME
+                            .WithMany(filme => filme.Sessoes) //1 FILME -> 1 OU MUITAS SESSÕES
+                            .HasForeignKey(sessao => sessao.FilmeId); //CHAVE ESTRANGEIRA: SESSAO->FilmeId PARA CHAVE PRIMÁRIA DE Filme
+}
+```
+Feitas essas mudanças, como não há mais campo Id em Sessão, mudar também 
+SessaoController->RecuperaSessoesPorId
+```
+//MÉTODO QUE MOSTRA UMA SESSÃO, DADO SEU ID
+[HttpGet("{filmeId}/{cinemaId}")]
+public IActionResult RecuperaSessoesPorId(int filmeId, int cinemaId)
+{
+    Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.FilmeId == filmeId &&
+                                                              sessao.CinemaId == cinemaId);
+    if(sessao != null)
+    {
+        ReadSessaoDto sessaoDto = _mapper.Map<ReadSessaoDto>(sessao);
+        return Ok(sessaoDto);
+    }
+    return NotFound();
+}
+```
+
+SessaoControler-> Método AdicionaSessao
+```
+//MÉTODO QUE ADICIONA UMA SESSÃO AO SISTEMA
+[HttpPost]
+public IActionResult AdicionaSessao(CreateSessaoDto dto)
+{
+    Sessao sessao = _mapper.Map<Sessao>(dto);
+    _context.Sessoes.Add(sessao);
+    _context.SaveChanges();
+    return CreatedAtAction(nameof(RecuperaSessoesPorId), new { filmeId = sessao.FilmeId, 
+                                                               cinemaId = sessao.CinemaId}
+                                                             , sessao);
+}
+```
+
+ReadSessaoDto
+```
+public class ReadSessaoDto
+{
+    public int FilmeId { get; set; }
+    public int CinemaId { get; set; }
+}
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration “Cinema e Filme”    
+Update-Database
+
+Feitas essas mudanças, o sistema agora cadastra cada sessão como sendo uma maneira de identificar unicamente um filme associado a uma sessão.
+
+
+
+### TRATANDO DELEÇÕES DE ENTIDADES RELACIONADAS
+Por padrão, usando o Entity Framework, sempre que uma entidade é deletada, as entidades a qual ela está ligada também são, para que a base de dados não fique com informações faltantes. Isso pode ser ruim, dado que, a deleção do endereço leva a deleção do cinema, que leva a deleção da sessão (efeito cascata). Isso pode ser tratado mudando o comportamento no FilmeContext, adicionando esse comportamento ao método OnModelCreating
+```
+builder.Entity<Endereco>().HasOne(endereco => endereco.Cinema) //1 ENDERECO -> 1 CINEMA
+                          .WithOne(cinema => cinema.Endereco) //1 CINEMA -> 1 ENDERECO
+                          .OnDelete(DeleteBehavior.Restrict); //DELEÇÃO RESTRITA
+                                                              //NÃO DELETA SE HOUVER CHAVES PRIMÁRIAS NA TUPLA
+```
+
+### UTILIZANDO SQL NOS MÉTODOS DO CONTROLLER
+Os métodos das classes controllers podem ser modificados para usar comandos SQL no próprio código. Por exemplo, para o método CinemaController->RecuperaCinemas, mudá-lo para que, se for passado um parâmetro enderecoId na URL da requisição, o método retorna somente o cinema que tem esse enderecoId (assim como foi feito com skip e take em FilmeController->RecuperaFilmes).
+```
+//MÉTODO QUE
+//MOSTRA TODOS OS CINEMAS DA APLICAÇÃO (SEM PARÂMETROS NA REQUISIÇÃO)
+//MOSTRA OS CINEMAS CUJO ENDEREÇO SEJA enderecoId
+[HttpGet]
+public IEnumerable<ReadCinemaDto> RecuperaCinemas([FromQuery] int? enderecoId = null)
+{
+    //SEM PARÂMETROS NA URL - RETORNA TODOS CINEMAS
+    if(enderecoId == null)
+    {
+        return _mapper.Map<List<ReadCinemaDto>>(
+        _context.Cinemas.ToList());
+    }
+
+    //COM PARÂMETRO - RETORNA CINEMAS CUJO ENDEREÇO SEJA enderecoId
+    return _mapper.Map<List<ReadCinemaDto>>
+        (_context.Cinemas.FromSqlRaw($"SELECT Id, Nome, EnderecoId FROM cinemas where cinemas.EnderecoId = {enderecoId}").ToList());
+}
+```
+
+### UTILIZANDO LINQ NOS MÉTODOS DO CONTROLLER
+Quando for mais pertinente usar expressões linq do que o SQL, isso também pode ser feito. Por exemplo, para a consulta de filmes, consultar apenas os filmes que estejam sendo exibidos em sessões de um cinema de nome específico.
+FilmeController->RecuperaFilmes
+```
+//MÉTODO QUE
+//LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
+//E MOSTRANDO OS PRÓXIMOS take FILMES
+//MOSTRANDO SOMENTE OS FILME QUE ESTÃO EM ALGUMA SESSÃO DO CINEMA DE NOME nomeCinema
+[HttpGet]
+public IEnumerable<ReadFilmeDto> RecuperaFilmes(
+            [FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
+            [FromQuery] int take = 50,//SEM DEFINIR, take É 50
+            [FromQuery] string? nomeCinema = null) //nullable, null por padrão
+{
+    if (nomeCinema == null)
+    {
+        return _mapper.Map<List<ReadFilmeDto>>
+        (_context.Filmes.Skip(skip).Take(take));
+    }
+
+    //USANDO LINQ
+    //RETORNO TODOS OBJETOS ReadFilmeDto
+    return _mapper.Map<List<ReadFilmeDto>>(_context.Filmes.Skip(skip).Take(take)//FAZENDO PAGINAÇAO
+                  .Where(filme => filme.Sessoes//ONDE, PARA CADA SESSAO
+                  .Any(sessao => sessao.Cinema.Nome == nomeCinema)).ToList());
+    //SELECIONO, SE HOUVER, OS OBJETOS CUJO O sessao.Cinema.Nome SEJA IGUAL A nomeCinema
+}
+```
+Tendo método construído, a consulta pode ser feita pela URL, mas se atentando em passar o parâmetro nomeCinema com os devidos encodings para espaço, considerando que, o nome do cinema pode conter espaços, mas para ser passado na URL, não. Isso pode ser feito usando https://www.urlencoder.org/ 
+*Espaço vazio, na URL é escrito como %20 
+
+Somente os filmes que estejam em sessões do cinema Cinema Max(skip 0 take 50)
+_https://localhost:7114/filme?skip=0&take=50&nomeCinema=Cinema%20Max_
+
+
+
+### DOCUMENTAÇÃO DA APLICAÇÃO
+A documentação, pelo swagger, pode ser feita através dos próprios métodos, e consultada, pela URL do localhost [Documentação Swagger](http://localhost:5125/Swagger/index.html)
+
+#### Habilitar o Swagger
 Program->
+```
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "FilmesApi", Version = "v1" });
@@ -593,11 +1378,12 @@ builder.Services.AddSwaggerGen(c =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
-
+```
 
 Para habilitar a exibição de documentação no swagger
 Clique duplo no projeto->
- <PropertyGroup>
+``` 
+<PropertyGroup>
    <TargetFramework>net6.0</TargetFramework>
    <Nullable>enable</Nullable>
    <ImplicitUsings>enable</ImplicitUsings>

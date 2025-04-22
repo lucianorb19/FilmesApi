@@ -3,6 +3,7 @@ using FilmesApi.Data.Dtos;
 using FilmesApi.Data;
 using FilmesApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FilmesApi.Controllers
 {
@@ -34,12 +35,22 @@ namespace FilmesApi.Controllers
         }
 
 
-        //MÉTODO QUE MOSTRA TODOS OS CINEMAS DA APLICAÇÃO
+        //MÉTODO QUE
+        //MOSTRA TODOS OS CINEMAS DA APLICAÇÃO (SEM PARÂMETROS NA REQUISIÇÃO)
+        //MOSTRA OS CINEMAS CUJO ENDEREÇO SEJA enderecoId
         [HttpGet]
-        public IEnumerable<ReadCinemaDto> RecuperaCinemas()
+        public IEnumerable<ReadCinemaDto> RecuperaCinemas([FromQuery] int? enderecoId = null)
         {
-            return _mapper.Map<List<ReadCinemaDto>>(
+            //SEM PARÂMETROS NA URL - RETORNA TODOS CINEMAS
+            if(enderecoId == null)
+            {
+                return _mapper.Map<List<ReadCinemaDto>>(
                 _context.Cinemas.ToList());
+            }
+
+            //COM PARÂMETRO - RETORNA CINEMAS CUJO ENDEREÇO SEJA enderecoId
+            return _mapper.Map<List<ReadCinemaDto>>
+                (_context.Cinemas.FromSqlRaw($"SELECT Id, Nome, EnderecoId FROM cinemas where cinemas.EnderecoId = {enderecoId}").ToList());
         }
 
 

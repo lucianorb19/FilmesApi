@@ -22,11 +22,14 @@ public class FilmeContext : DbContext//CLASSE QUE REMEDIA LIGAÇÃO CLASSES E BA
     }
 
     //DEMAIS MÉTODOS
-    //MÉTODO QUE CRIA A CHAVE PRIMÁRIA DE SESSOES - COMPOSTA por FilmeId + CinemaId
-    //E QUE RELACIONA A TABELA SESSOES COM FILME E CINEMA (AGORA QUE ELA É A TABLE QUE GUARDA A
-    //RELAÇÃO N:N ENTRE FILME E CINEMA
+    //MÉTODO QUE DEFINE COMPORTAMENTOS PARA A CRIAÇÃO DE ENTIDADES
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        //MÉTODO QUE CRIA A CHAVE PRIMÁRIA DE SESSOES - COMPOSTA por FilmeId + CinemaId
+        //E QUE RELACIONA A TABELA SESSOES COM FILME E CINEMA (AGORA QUE ELA É A TABLE QUE GUARDA A
+        //RELAÇÃO N:N ENTRE FILME E CINEMA
+
         //CADA SESSÃO TEM COMO CHAVE PRIMÁRIA FilmeId+CinemaId
         builder.Entity<Sessao>().HasKey(sessao => new { sessao.FilmeId, sessao.CinemaId });
 
@@ -39,6 +42,13 @@ public class FilmeContext : DbContext//CLASSE QUE REMEDIA LIGAÇÃO CLASSES E BA
         builder.Entity<Sessao>().HasOne(sessao => sessao.Filme) //1 SESSÃO -> 1 FILME
                                 .WithMany(filme => filme.Sessoes) //1 FILME -> 1 OU MUITAS SESSÕES
                                 .HasForeignKey(sessao => sessao.FilmeId); //CHAVE ESTRANGEIRA: SESSAO->FilmeId PARA CHAVE PRIMÁRIA DE Filme
+
+        builder.Entity<Endereco>().HasOne(endereco => endereco.Cinema) //1 ENDERECO -> 1 CINEMA
+                                  .WithOne(cinema => cinema.Endereco) //1 CINEMA -> 1 ENDERECO
+                                  .OnDelete(DeleteBehavior.Restrict); //DELEÇÃO RESTRITA
+                                                                      //NÃO DELETA SE HOUVER CHAVES PRIMÁRIAS NA TUPLA
+    
+    
     }
 
 

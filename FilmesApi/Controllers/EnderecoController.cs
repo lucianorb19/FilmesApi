@@ -28,7 +28,7 @@ namespace FilmesApi.Controllers
         //DEMAIS MÉTODOS
         //MÉTODO QUE ADICIONA UM ENDEREÇO A BD
         [HttpPost]
-        public IActionResult adicionaEndereco([FromBody] CreateEnderecoDto enderecoDto)
+        public IActionResult AdicionaEndereco([FromBody] CreateEnderecoDto enderecoDto)
         {
             Endereco endereco = _mapper.Map<Endereco>(enderecoDto);
             _context.Enderecos.Add(endereco);
