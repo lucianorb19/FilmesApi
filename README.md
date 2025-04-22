@@ -1120,8 +1120,52 @@ Até aqui, as entidades estão relacionadas corretamente, mas ainda faltam algum
 * Mostrar na consulta de sessões, qual filme dessa sessão;
 * Mostar na consulta de filmes, em quais sessões cada filme está;
 
+### RELACIONANDO ENTIDADE SESSAO<->CINEMA 1:N
+* Um cinema passa várias sessões. Cada sessão só acontece em um cinema.
 
+Mudar Model Sessao -> Adicionar
+```
+//RELAÇÃO CINEMA<->SESSAO
+[Required]
+public int CinemaId { get; set; }
+public virtual Cinema Cinema { get; set; }
+```
 
+Mudar Model Cinema -> Adicionar
+```
+//RELAÇÃO 1:N CINEMA<-> SESSÃO
+public virtual ICollection<Sessao> Sessoes { get; set; }
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration Relacao-Cinema-Sessao- Constrói a estrutura da tabela  
+Update-Database - aplica as mudanças na base de dados MySql  
+
+** Problema: A chave estrangeira CinemaId, em Sessao, começa com 0 por padrão, enquanto a chave primária Id em Cinema começa com 1, o que impede o funcionamento da chave estrangeira.**
+
+Para resolver:
+1.Remover a migration no console Nuget
+Remove-Migration
+
+2.Alterar a tabela Sessoes e remover a coluna CinemaId - no MySql Workbench
+alter table sessoes drop column CinemaId;
+
+3.Permitir que, na tabela Sessoes, a coluna CinemaId possar, ser nula, retirando o “[Required]” e tornando o atribtuo nullable
+```
+//RELAÇÃO CINEMA<->SESSAO
+public int? CinemaId { get; set; }
+public virtual Cinema Cinema { get; set; }
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration Relacao-Cinema-Sessao- Constrói a estrutura da tabela  
+Update-Database - aplica as mudanças na base de dados MySql
+
+**Até aqui, tudo funciona, mas a consulta dos filmes gera erro, porque em FilmeController, o método RecuperaFilmes, no seu retorno, por usar
+_context.Filmes retorna um Queryble, que não pode ser convertido pelo AutoMapper.
+Isso se resolve colocando .ToList() ao final dele.**
 
 
 
