@@ -58,10 +58,8 @@ namespace FilmesApi.Controllers
         //MÉTODO QUE LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
         //E MOSTRANDO OS PRÓXIMOS take FILMES
         /// <summary>
-        /// Método que lista vários filmes da aplicação
+        /// Método que lista todos os filmes da aplicação
         /// </summary>
-        /// <param name="skip"> Quantos filmes iniciais serão desconsiderados</param>
-        /// <param name="take"> Quantos filmes serão mostrados</param>
         /// <returns>IEnumerable</returns>
         /// <response code="200">Em caso de leitura bem sucedida</response>
         [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO

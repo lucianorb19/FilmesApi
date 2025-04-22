@@ -44,6 +44,16 @@
         "tags": [
           "Cinema"
         ],
+        "parameters": [
+          {
+            "name": "enderecoId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -369,7 +379,7 @@
         "tags": [
           "Filme"
         ],
-        "summary": "Método que lista vários filmes da aplicação",
+        "summary": "Método que lista todos os filmes da aplicação",
         "responses": {
           "200": {
             "description": "Em caso de leitura bem sucedida",
