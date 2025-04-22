@@ -1206,6 +1206,98 @@ CreateMap<Cinema, ReadCinemaDto>()
 ```
 
 
+### RELACIONANDO ENTIDADE FILME<->CINEMA N:N
+Relacionamentos N:N são mapeados com uma tabela separada para eles. No nosso sistema, ao invés de criar uma tabela com essas informações, usaremos a tabela Sessao, que já guarda as informações que relacionam Filme e Cinema.
+Para que a entidade Sessão funcione corretamente, nesse caso, ela passar por algumas mudanças
+
+Drop database no WorkBench para evitar conflitos
+
+Tornar o campo Model Sessao->FilmeId nullable
+```
+//RELAÇÃO SESSÃO<->FILME
+public int? FilmeId { get; set; }
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration “FilmeId nulo”    
+Update-Database  
+
+Retirar do model Sessao o campo Id
+
+Construir, em FilmeContext, o código que vai relacionar os campos FilmeId e CinemaId como chave primária de Sessao e vai definir como a tabela Sessao se relaciona com Filme e Cinema
+```
+//DEMAIS MÉTODOS
+//MÉTODO QUE CRIA A CHAVE PRIMÁRIA DE SESSOES - COMPOSTA por FilmeId + CinemaId
+//E QUE RELACIONA A TABELA SESSOES COM FILME E CINEMA (AGORA QUE ELA É A TABLE QUE GUARDA A
+//RELAÇÃO N:N ENTRE FILME E CINEMA
+protected override void OnModelCreating(ModelBuilder builder)
+{
+    //CADA SESSÃO TEM COMO CHAVE PRIMÁRIA FilmeId+CinemaId
+    builder.Entity<Sessao>().HasKey(sessao => new { sessao.FilmeId, sessao.CinemaId });
+
+    //COMO A SESSÃO SE RELACIONA COM CINEMA? 
+    builder.Entity<Sessao>().HasOne(sessao => sessao.Cinema) //1 SESSÃO -> 1 CINEMA
+                            .WithMany(cinema => cinema.Sessoes) //1 CINEMA -> 1 OU MUITAS SESSÕES
+                            .HasForeignKey(sessao => sessao.CinemaId); //CHAVE ESTRANGEIRA: SESSAO->CinemaId PARA CHAVE PRIMÁRIA DE Cinema
+
+    //COMO A SESSÃO SE RELACIONA COM FILME? 
+    builder.Entity<Sessao>().HasOne(sessao => sessao.Filme) //1 SESSÃO -> 1 FILME
+                            .WithMany(filme => filme.Sessoes) //1 FILME -> 1 OU MUITAS SESSÕES
+                            .HasForeignKey(sessao => sessao.FilmeId); //CHAVE ESTRANGEIRA: SESSAO->FilmeId PARA CHAVE PRIMÁRIA DE Filme
+}
+```
+Feitas essas mudanças, como não há mais campo Id em Sessão, mudar também 
+SessaoController->RecuperaSessoesPorId
+```
+//MÉTODO QUE MOSTRA UMA SESSÃO, DADO SEU ID
+[HttpGet("{filmeId}/{cinemaId}")]
+public IActionResult RecuperaSessoesPorId(int filmeId, int cinemaId)
+{
+    Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.FilmeId == filmeId &&
+                                                              sessao.CinemaId == cinemaId);
+    if(sessao != null)
+    {
+        ReadSessaoDto sessaoDto = _mapper.Map<ReadSessaoDto>(sessao);
+        return Ok(sessaoDto);
+    }
+    return NotFound();
+}
+```
+
+SessaoControler-> Método AdicionaSessao
+```
+//MÉTODO QUE ADICIONA UMA SESSÃO AO SISTEMA
+[HttpPost]
+public IActionResult AdicionaSessao(CreateSessaoDto dto)
+{
+    Sessao sessao = _mapper.Map<Sessao>(dto);
+    _context.Sessoes.Add(sessao);
+    _context.SaveChanges();
+    return CreatedAtAction(nameof(RecuperaSessoesPorId), new { filmeId = sessao.FilmeId, 
+                                                               cinemaId = sessao.CinemaId}
+                                                             , sessao);
+}
+```
+
+ReadSessaoDto
+```
+public class ReadSessaoDto
+{
+    public int FilmeId { get; set; }
+    public int CinemaId { get; set; }
+}
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration “Cinema e Filme”    
+Update-Database
+
+Feitas essas mudanças, o sistema agora cadastra cada sessão como sendo uma maneira de identificar unicamente um filme associado a uma sessão.
+
+
+
 
 
 
