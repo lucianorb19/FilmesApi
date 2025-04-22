@@ -594,39 +594,178 @@ FilmeProfile->Adicionar
  CreateMap<Filme, ReadFilmeDto>();
 ```
 
-### DOCUMENTAÇÃO DA APLICAÇÃO
-A documentação, pelo swagger, pode ser feita através dos próprios métodos
-FilmeController->
+
+## RELACIONANDO ENTIDADES
+### ENTIDADE CINEMA
+Models-> Cinema.cs
 ```
-//DOCUMENTAÇÃO SWAGGER
-/// <summary>
-/// Adiciona um filme à base de dados.
-/// </summary>
-/// <param name="filmeDto">DTO usado pelo mapper para efetivar as mudanças na base de dados</param>
-/// <returns>IActionResult</returns>
-/// <response code="201">Em caso de inserção bem sucedida</response>
-[HttpPost]
-[ProducesResponseType(StatusCodes.Status201Created)]
-public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
-{                         //[FromBody] DESGINA QUE O PARÂMETRO VIRÁ DO CORPO DA REQUISIÇÃO
+public class Cinema
+{
+    [Key]
+    [Required]
+    public int Id { get; set; }
 
-    //filme.Id = id++;// 0, 1, 2....
-    //filmes.Add(filme);
-            
-    //Objeto filme recebe um objeto Filme a partir do mapeamento de filmeDTO
-    Filme filme = _mapper.Map<Filme>(filmeDto);
-    _context.Filmes.Add(filme); //FILME ADICIONADO A BD
-    _context.SaveChanges(); //MUDANÇAS SALVAS NA BD
-    return CreatedAtAction(nameof(RecuperaFilmePorId), 
-                           new { id = filme.Id }, 
-                           filme);
-
-    //CreatedAtAction - MÉTODO PADRÃO REST - RETORNA O OBJETO ADICIONADO E O SEU CAMINHO
-    //nameof(RecuperaFilmePorId) new { id = filme.Id } - CAMINHO DO OBJETO CRIADO
-    //filme - OBJETO CRIADO
+    [Required(ErrorMessage = "Campo nome é obrigatório")]
+    public string Nome { get; set; }
 }
+```
 
+Data->Dtos->
+CreateCinemaDto - Nome (required)
+```
+public class CreateCinemaDto
+{
+    [Required(ErrorMessage = "Campo nome é obrigatório")]
+    public string Nome { get; set; }
+}
+```
+
+ReadCinemaDto - Id e Nome
+```
+public class ReadCinemaDto
+{
+    public int Id { get; set; }
+
+    public string Nome { get; set; }
+}
+```
+
+UpdateCinemaDto - Nome (required)
+```
+public class UpdateCinemaDto
+{
+    [Required(ErrorMessage = "Campo nome é obrigatório")]
+    public string Nome { get; set; }
+}
+```
+
+FilmeContext -> adicionar propriedade de conexão com tabela Cinemas
+```
+public DbSet<Cinema> Cinemas{ get; set; }
+```
+
+Profiles-> criar classe CinemaProfile
+```
+using AutoMapper;
+using FilmesApi.Data.Dtos;
+using FilmesApi.Models;
+
+namespace FilmesApi.Profiles
+{
+    public class CinemaProfile : Profile
+    {
+        public CinemaProfile()
+        {
+            CreateMap<CreateCinemaDto, Cinema>();
+            CreateMap<Cinema, ReadCinemaDto>();
+            CreateMap<UpdateCinemaDto, Cinema>();
+
+        }
+    }
+}
+```
+
+CinemaController
+```
+using AutoMapper;
+using FilmesApi.Data.Dtos;
+using FilmesApi.Data;
+using FilmesApi.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace FilmesApi.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class CinemaController : ControllerBase
+    {
+        //PROPRIEDADES-ATRIBUTOS
+        private FilmeContext _context;
+        private IMapper _mapper;
+        
+        //CONSTRUTOR
+        public CinemaController(FilmeContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        //DEMAIS MÉTODOS
+        //MÉTODO QUE ADICIONA UM CINEMA AO BANCO
+        [HttpPost]
+        public IActionResult AdicionaCinema([FromBody] CreateCinemaDto cinemaDto)
+        {
+            Cinema cinema = _mapper.Map<Cinema>(cinemaDto);
+            _context.Cinemas.Add(cinema);
+            _context.SaveChanges();
+            return CreatedAtAction(
+                nameof(RecuperaCinemasPorId), new { Id = cinema.Id }, cinemaDto);
+        }
+
+
+        //MÉTODO QUE MOSTRA TODOS OS CINEMAS DA APLICAÇÃO
+        [HttpGet]
+        public IEnumerable<ReadCinemaDto> RecuperaCinemasDto()
+        {
+            return _mapper.Map<List<ReadCinemaDto>>(
+                _context.Cinemas.ToList());
+        }
+
+
+        //MÉTODO QUE RETORNA UM CINEMA DADO SEU ID
+        [HttpGet("{id}")]
+        public IActionResult RecuperaCinemasPorId(int id)
+        {
+            Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
+            if (cinema != null)
+            {
+                ReadCinemaDto cinemaDto = _mapper.Map<ReadCinemaDto>(cinema);
+                return Ok(cinemaDto);
+            }
+            return NotFound();
+        }
+
+
+        //MÉTODO QUE ATUALIZA UM OBJETO CINEMA POR COMPLETO
+        //NÃO HÁ UPDATE COM VERBO PATCH, CONSIDERANDO QUE CINEMA SÓ TEM UM CAMPO
+        //MODIFICÁVEL - NOME
+        [HttpPut("{id}")]
+        public IActionResult AtualizaCinema(int id, [FromBody] UpdateCinemaDto cinemaDto)
+        {
+            Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
+            if (cinema == null) return NotFound();
+            _mapper.Map(cinemaDto, cinema);//REALIZAÇÃO DO UPDATE NA BASE
+            _context.SaveChanges();
+            return NoContent();
+        }
+
+
+        //MÉTODO QUE DELETA UM CINEMA, DADO SEU ID
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCinema(int id)
+        {
+            Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
+            if (cinema == null) return NotFound();
+            _context.Remove(cinema);
+            _context.SaveChanges();
+            return NoContent();
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+### DOCUMENTAÇÃO DA APLICAÇÃO
+A documentação, pelo swagger, pode ser feita através dos próprios métodos, e consultada, pela URL do localhost [ Documentação Swagger ] (http://localhost:5125/Swagger/index.html)
+
+#### Habilitar o Swagger
 Program->
+```
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "FilmesApi", Version = "v1" });
@@ -634,11 +773,12 @@ builder.Services.AddSwaggerGen(c =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
-
+```
 
 Para habilitar a exibição de documentação no swagger
 Clique duplo no projeto->
- <PropertyGroup>
+``` 
+<PropertyGroup>
    <TargetFramework>net6.0</TargetFramework>
    <Nullable>enable</Nullable>
    <ImplicitUsings>enable</ImplicitUsings>
