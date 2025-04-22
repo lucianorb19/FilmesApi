@@ -993,7 +993,132 @@ public CinemaProfile()
 Dessa form, as entidades Cinema e Endereco ficam relacionadas corretamente, considerando que:  
 *  Relacionamento 1:1;
 * O endereço já existe antes de instanciar o cinema;
-* A relação se dá no momento da inserção do cinema, que no campo EnderecoId, guarda uma referência ao campo Id da entidade Endereco;
+* A relação se dá no momento da inserção do cinema, que no campo EnderecoId, guarda uma referência ao campo Id da entidade Endereco.
+
+### ENTIDADE SESSÃO E SUA RELAÇÃO COM FILME - 1:N
+* Uma sessão tem um filme. Um filme pode estar ao mesmo tempo em diversas sessões;
+* Não existe sessão sem filme. Existe filme sem sessão.
+
+Model Sessao
+```
+public class Sessao
+{
+    [Key]
+    [Required]
+    public int Id { get; set; }
+
+    //RELAÇÃO SESSÃO<->FILME
+    [Required]
+    public int FilmeId { get; set; }
+    public virtual Filme Filme { get; set; }
+}
+```
+
+DTOs
+CreateSessaoDto
+```
+public class CreateSessaoDto
+{
+    public int FilmeId { get; set; }
+}
+```
+
+ReadSessaoDto
+```
+public class ReadSessaoDto
+{
+    public int Id { get; set; }
+}
+```
+
+SessaoProfile
+```
+public class SessaoProfile : Profile
+{
+    public SessaoProfile()
+    {
+        CreateMap<CreateSessaoDto, Sessao>();
+        CreateMap<Sessao, ReadSessaoDto>();
+
+    }
+}
+```
+
+FilmeContext->Adicionar
+```
+public DbSet<Sessao> Sessoes{ get; set; }
+```
+
+SessaoController
+```
+namespace FilmesApi.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class SessaoController : ControllerBase
+    {
+        //PROPRIEDADES
+        private FilmeContext _context;
+        private IMapper _mapper;
+
+
+        //CONSTRUTOR
+        public SessaoController(FilmeContext context, IMapper mapper) //ctor
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        //MÉTODO QUE ADICIONA UMA SESSÃO AO SISTEMA
+        [HttpPost]
+        public IActionResult AdicionaSessao(CreateSessaoDto dto)
+        {
+            Sessao sessao = _mapper.Map<Sessao>(dto);
+            _context.Sessoes.Add(sessao);
+            _context.SaveChanges();
+            return CreatedAtAction(nameof(RecuperaSessoesPorId), new { Id = sessao.Id }, sessao);
+        }
+
+
+        //MÉTODO QUE MOSTRA AS SESSÕES DO SISTEMA
+        [HttpGet]
+        public IEnumerable<ReadSessaoDto> RecuperaSessoes()
+        {
+            return _mapper.Map<List<ReadSessaoDto>>(_context.Sessoes.ToList());
+        }
+
+
+        //MÉTODO QUE MOSTRA UMA SESSÃO, DADO SEU ID
+        public IActionResult RecuperaSessoesPorId(int id)
+        {
+            Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.Id == id);
+            if(sessao != null)
+            {
+                ReadSessaoDto sessaoDto = _mapper.Map<ReadSessaoDto>(sessao);
+                return Ok(sessaoDto);
+            }
+            return NotFound();
+        }
+    }
+}
+```
+
+Mudança Model Filme
+```
+//RELAÇÃO SESSÃO<->FILME
+//FILME PODE ESTAR AO MESMO TEMPO EM 1 OU MUITAS SESSÕES
+//COLEÇÃO DE SESSÕES
+public virtual ICollection<Sessao> Sessoes { get; set; }
+```
+
+Executar as mudanças do código para a BD
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration Relacao-Sessao-Filme - Constrói a estrutura da tabela  
+Update-Database - aplica as mudanças na base de dados MySql  
+
+Até aqui, as entidades estão relacionadas corretamente, mas ainda faltam algumas melhorias, como:
+* Mostrar na consulta de sessões, qual filme dessa sessão;
+* Mostar na consulta de filmes, em quais sessões cada filme está;
 
 
 
