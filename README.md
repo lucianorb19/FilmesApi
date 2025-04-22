@@ -921,6 +921,79 @@ namespace FilmesApi.Controllers
 }
 ```
 
+## RELAÇÃO ENTRE ENDIDADES
+### CINEMA <-> ENDERECO - 1:1  
+(Cinema não existe sem endereço / Endereço existe sem Cinema)
+
+#### Downloads necessários
+
+Ferramentas->Gerenciador de Pacotes Nuget->Gerenciar pacotes para solução->  
+Microsoft.EntityFramework.Proxies
+
+Mudar models Cinema e Endereço
+
+Model Cinema
+```
+//PROPRIEDADES RELAÇÃO 1:1 CINEMA <-> ENDERECO
+//TABELA CINEMA TEM DUAS COLUNAS - UMA SENDO O ID DO ENDEREÇO E OUTRA SENDO O ENDEREÇO EM SI
+public int EnderecoId { get; set; }
+public virtual Endereco Endereco { get; set; }
+```
+
+
+Model Endereco
+```
+//PROPRIEDADE RELAÇÃO 1:1 CINEMA<->ENDEREÇO
+public virtual Cinema Cinema { get; set; }
+```
+* Lembrar: a entidade com a chave estrangeira - guarda a propriedade ...Id {get;set;}
+* Cinema contém uma chave estrangeira para Endereço, logo, Cinema fica com EnderecoId;
+
+Mudar CreateCinemaDto
+```
+public int EnderecoId { get; set; }
+```
+
+Mudar ReadCinemaDto
+```
+public ReadEnderecoDto ReadEnderecoDto { get; set; }
+```
+
+Executar as mudanças do código para a BD  
+Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes    
+Add-Migration Relacao-Cinema-Endereco - Constrói a estrutura da tabela    
+Update-Database - aplica as mudanças na base de dados MySql  
+
+Mudar Program - linha 10
+```
+builder.Services.AddDbContext<FilmeContext>(opts =>
+opts.UseLazyLoadingProxies().UseMySql(connectionString,
+              ServerVersion.AutoDetect(connectionString)));
+```
+
+Até o momento, sempre que um cinema é adicionado, ele não tem endereço, isso porque mesmo configurando tudo acima, ainda falta configurar o CinemaProfile, dado que sem essa configuração, a função do AutoMap não consegue relacionar o Cinema com o Endereço
+
+Mudar CinemProfile->
+```
+public CinemaProfile()
+{
+    CreateMap<CreateCinemaDto, Cinema>();
+
+    //USADO NO RecuperaCinemas - CONFIGURAR COMO O AUTOMAPPER FUNCIONA
+    CreateMap<Cinema, ReadCinemaDto>().ForMember(cinemaDto => cinemaDto.ReadEnderecoDto,
+        opt => opt.MapFrom(cinema => cinema.Endereco));
+    //ForMember(cinemaDto  - PARA O MEMBRO DO DESTINO, QUE É DO TIPO ReadCinemaDto
+    //=> cinemaDto.ReadEnderecoDto - ACESSANDO O CAMPO ReadEnderecoDto, QUE É UM CAMPO DESSE OBJETO
+    //opt => opt.MapFrom(cinema => cinema.Endereco - QUERO PEGAR, DA ORIGEM, O CAMPO Endereco
+            
+    CreateMap<UpdateCinemaDto, Cinema>();
+}
+```
+
+Dessa form, as entidades Cinema e Endereco ficam relacionadas corretamente, considerando que:  
+*  Relacionamento 1:1;
+* O endereço já existe antes de instanciar o cinema;
+* A relação se dá no momento da inserção do cinema, que no campo EnderecoId, guarda uma referência ao campo Id da entidade Endereco;
 
 
 
