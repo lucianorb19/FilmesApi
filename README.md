@@ -1142,16 +1142,16 @@ Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes
 Add-Migration Relacao-Cinema-Sessao- Constrói a estrutura da tabela  
 Update-Database - aplica as mudanças na base de dados MySql  
 
-** Problema: A chave estrangeira CinemaId, em Sessao, começa com 0 por padrão, enquanto a chave primária Id em Cinema começa com 1, o que impede o funcionamento da chave estrangeira.**
+**Problema: A chave estrangeira CinemaId, em Sessao, começa com 0 por padrão, enquanto a chave primária Id em Cinema começa com 1, o que impede o funcionamento da chave estrangeira.**
 
 Para resolver:
-1.Remover a migration no console Nuget
+1. Remover a migration no console Nuget
 Remove-Migration
 
-2.Alterar a tabela Sessoes e remover a coluna CinemaId - no MySql Workbench
+2. Alterar a tabela Sessoes e remover a coluna CinemaId - no MySql Workbench
 alter table sessoes drop column CinemaId;
 
-3.Permitir que, na tabela Sessoes, a coluna CinemaId possar, ser nula, retirando o “[Required]” e tornando o atribtuo nullable
+3. Permitir que, na tabela Sessoes, a coluna CinemaId possar, ser nula, retirando o “[Required]” e tornando o atribtuo nullable
 ```
 //RELAÇÃO CINEMA<->SESSAO
 public int? CinemaId { get; set; }
@@ -1163,9 +1163,50 @@ Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes
 Add-Migration Relacao-Cinema-Sessao- Constrói a estrutura da tabela  
 Update-Database - aplica as mudanças na base de dados MySql
 
-**Até aqui, tudo funciona, mas a consulta dos filmes gera erro, porque em FilmeController, o método RecuperaFilmes, no seu retorno, por usar
-_context.Filmes retorna um Queryble, que não pode ser convertido pelo AutoMapper.
-Isso se resolve colocando .ToList() ao final dele.**
+Até aqui, tudo funciona, mas a consulta dos filmes gera erro, porque em FilmeController, o método RecuperaFilmes, no seu retorno, por usar
+_context.Filmes retorna um Queryble, que não pode ser convertido pelo AutoMapper.Isso se resolve colocando .ToList() ao final dele.
+
+
+### MELHORIAS
+Ao consultar filmes, mostrar as sessões relacionadas
+ReadFilmeDto->Adicionar
+```
+public ICollection<ReadSessaoDto> Sessoes{ get; set; }
+```
+
+Ao consultar cinemas, mostrar as sessões relacionadas
+ReadCinemaDto->Adicionar
+```
+public ICollection<ReadSessaoDto> Sessoes{ get; set; }
+```
+
+Configurar o AutoMapper para conseguir mapear, em Filmes, as Sessões relacionadas
+FilmeProfile
+```
+CreateMap<Filme, ReadFilmeDto>()
+    .ForMember(filmeDto => filmeDto.Sessoes, 
+    opt => opt.MapFrom(filme => filme.Sessoes));
+//ForMember(filmeDto  - PARA O MEMBRO DO DESTINO, QUE É DO TIPO ReadFilmeDto
+//=> cinemaDto.Sessoes - ACESSANDO O CAMPO Sessoes, QUE É UM CAMPO DESSE OBJETO
+//opt => opt.MapFrom(filme => filme.Sessoes - QUERO PEGAR, DA ORIGEM, O CAMPO Sessoes
+```
+
+Configurar o AutoMapper para conseguir mapear, em Cinemas, as Sessões relacionadas
+CinemaProfile
+```
+//USADO NO CinemaController->RecuperaCinemas - CONFIGURAR COMO O AUTOMAPPER FUNCIONA
+CreateMap<Cinema, ReadCinemaDto>()
+    .ForMember(cinemaDto => cinemaDto.Endereco,
+    opt => opt.MapFrom(cinema => cinema.Endereco))
+    .ForMember(cinemaDto => cinemaDto.Sessoes,
+    opt => opt.MapFrom(cinema => cinema.Sessoes));
+//ForMember(cinemaDto  - PARA O MEMBRO DO DESTINO, QUE É DO TIPO ReadCinemaDto
+//=> cinemaDto.Endereco - ACESSANDO O CAMPO Endereco, QUE É UM CAMPO DESSE OBJETO
+//opt => opt.MapFrom(cinema => cinema.Endereco - QUERO PEGAR, DA ORIGEM, O CAMPO Endereco
+```
+
+
+
 
 
 
