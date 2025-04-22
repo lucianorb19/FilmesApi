@@ -1298,7 +1298,70 @@ Feitas essas mudanças, o sistema agora cadastra cada sessão como sendo uma man
 
 
 
+### TRATANDO DELEÇÕES DE ENTIDADES RELACIONADAS
+Por padrão, usando o Entity Framework, sempre que uma entidade é deletada, as entidades a qual ela está ligada também são, para que a base de dados não fique com informações faltantes. Isso pode ser ruim, dado que, a deleção do endereço leva a deleção do cinema, que leva a deleção da sessão (efeito cascata). Isso pode ser tratado mudando o comportamento no FilmeContext, adicionando esse comportamento ao método OnModelCreating
+```
+builder.Entity<Endereco>().HasOne(endereco => endereco.Cinema) //1 ENDERECO -> 1 CINEMA
+                          .WithOne(cinema => cinema.Endereco) //1 CINEMA -> 1 ENDERECO
+                          .OnDelete(DeleteBehavior.Restrict); //DELEÇÃO RESTRITA
+                                                              //NÃO DELETA SE HOUVER CHAVES PRIMÁRIAS NA TUPLA
+```
 
+### UTILIZANDO SQL NOS MÉTODOS DO CONTROLLER
+Os métodos das classes controllers podem ser modificados para usar comandos SQL no próprio código. Por exemplo, para o método CinemaController->RecuperaCinemas, mudá-lo para que, se for passado um parâmetro enderecoId na URL da requisição, o método retorna somente o cinema que tem esse enderecoId (assim como foi feito com skip e take em FilmeController->RecuperaFilmes).
+```
+//MÉTODO QUE
+//MOSTRA TODOS OS CINEMAS DA APLICAÇÃO (SEM PARÂMETROS NA REQUISIÇÃO)
+//MOSTRA OS CINEMAS CUJO ENDEREÇO SEJA enderecoId
+[HttpGet]
+public IEnumerable<ReadCinemaDto> RecuperaCinemas([FromQuery] int? enderecoId = null)
+{
+    //SEM PARÂMETROS NA URL - RETORNA TODOS CINEMAS
+    if(enderecoId == null)
+    {
+        return _mapper.Map<List<ReadCinemaDto>>(
+        _context.Cinemas.ToList());
+    }
+
+    //COM PARÂMETRO - RETORNA CINEMAS CUJO ENDEREÇO SEJA enderecoId
+    return _mapper.Map<List<ReadCinemaDto>>
+        (_context.Cinemas.FromSqlRaw($"SELECT Id, Nome, EnderecoId FROM cinemas where cinemas.EnderecoId = {enderecoId}").ToList());
+}
+```
+
+### UTILIZANDO LINQ NOS MÉTODOS DO CONTROLLER
+Quando for mais pertinente usar expressões linq do que o SQL, isso também pode ser feito. Por exemplo, para a consulta de filmes, consultar apenas os filmes que estejam sendo exibidos em sessões de um cinema de nome específico.
+FilmeController->RecuperaFilmes
+```
+//MÉTODO QUE
+//LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
+//E MOSTRANDO OS PRÓXIMOS take FILMES
+//MOSTRANDO SOMENTE OS FILME QUE ESTÃO EM ALGUMA SESSÃO DO CINEMA DE NOME nomeCinema
+[HttpGet]
+public IEnumerable<ReadFilmeDto> RecuperaFilmes(
+            [FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
+            [FromQuery] int take = 50,//SEM DEFINIR, take É 50
+            [FromQuery] string? nomeCinema = null) //nullable, null por padrão
+{
+    if (nomeCinema == null)
+    {
+        return _mapper.Map<List<ReadFilmeDto>>
+        (_context.Filmes.Skip(skip).Take(take));
+    }
+
+    //USANDO LINQ
+    //RETORNO TODOS OBJETOS ReadFilmeDto
+    return _mapper.Map<List<ReadFilmeDto>>(_context.Filmes.Skip(skip).Take(take)//FAZENDO PAGINAÇAO
+                  .Where(filme => filme.Sessoes//ONDE, PARA CADA SESSAO
+                  .Any(sessao => sessao.Cinema.Nome == nomeCinema)).ToList());
+    //SELECIONO, SE HOUVER, OS OBJETOS CUJO O sessao.Cinema.Nome SEJA IGUAL A nomeCinema
+}
+```
+Tendo método construído, a consulta pode ser feita pela URL, mas se atentando em passar o parâmetro nomeCinema com os devidos encodings para espaço, considerando que, o nome do cinema pode conter espaços, mas para ser passado na URL, não. Isso pode ser feito usando https://www.urlencoder.org/ 
+*Espaço vazio, na URL é escrito como %20 
+
+Somente os filmes que estejam em sessões do cinema Cinema Max(skip 0 take 50)
+_https://localhost:7114/filme?skip=0&take=50&nomeCinema=Cinema%20Max_
 
 
 
