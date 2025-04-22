@@ -379,10 +379,36 @@
         "tags": [
           "Filme"
         ],
-        "summary": "Método que lista todos os filmes da aplicação",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "nomeCinema",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Em caso de leitura bem sucedida",
+            "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {

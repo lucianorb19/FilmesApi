@@ -55,29 +55,47 @@ namespace FilmesApi.Controllers
         }
 
 
-        //MÉTODO QUE LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
+        //MÉTODO QUE
+        //LISTA VÁRIOS FILMES DA APLICAÇÃO - PULANDO skip FILMES INICIAIS
         //E MOSTRANDO OS PRÓXIMOS take FILMES
+        //MOSTRANDO SOMENTE OS FILME QUE ESTÃO EM ALGUMA SESSÃO DO CINEMA DE NOME nomeCinema
         /// <summary>
         /// Método que lista todos os filmes da aplicação
         /// </summary>
+        /// <param name="skip">Quantos filmes iniciais não serão considerados</params>
+        /// <param name="take">Quantos filmes serão mostrados</params>
         /// <returns>IEnumerable</returns>
         /// <response code="200">Em caso de leitura bem sucedida</response>
         [HttpGet] //DESIGNA QUE O MÉTODO ABAIXO OBTEM INFORMAÇÕES DA APLICAÇÃO
+        public IEnumerable<ReadFilmeDto> RecuperaFilmes(
+            [FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
+            [FromQuery] int take = 50,//SEM DEFINIR, take É 50
+            [FromQuery] string? nomeCinema = null) //nullable, null por padrão
+        {
+        //return filmes.Skip(skip).Take(take);//LISTA DE FILMES
+        //return _context.Filmes.Skip(skip).Take(take);//LISTA DE FILMES
+        //RETORNO É UMA MAPPER DA LISTA DTO DO TIPO ReadFilmeDto
+            if(nomeCinema == null)
+            {
+                return _mapper.Map<List<ReadFilmeDto>>
+                (_context.Filmes.Skip(skip).Take(take).ToList());
+            }
+
+            //USANDO LINQ
+            //RETORNO TODOS OBJETOS ReadFilmeDto
+            return _mapper.Map<List<ReadFilmeDto>>(_context.Filmes.Skip(skip).Take(take)//FAZENDO PAGINAÇAO
+                          .Where(filme => filme.Sessoes//ONDE, PARA CADA SESSAO
+                          .Any(sessao => sessao.Cinema.Nome == nomeCinema)).ToList());
+                          //SELECIONO, SE HOUVER, OS OBJETOS CUJO O sessao.Cinema.Nome SEJA IGUAL A nomeCinema
+        }
+
+        /*
         public IEnumerable<ReadFilmeDto> RecuperaFilmes() //SEM DEFINIR, take É 50
         {
             return _mapper.Map<List<ReadFilmeDto>>(_context.Filmes.ToList());
         }
+        */
 
-        //public IEnumerable<ReadFilmeDto> RecuperaFilmes([FromQuery] int skip = 0, //SEM DEFINIR, skip É 0
-        //                                         [FromQuery] int take = 50) //SEM DEFINIR, take É 50
-        //{
-        //return filmes.Skip(skip).Take(take);//LISTA DE FILMES
-        //return _context.Filmes.Skip(skip).Take(take);//LISTA DE FILMES
-        //RETORNO É UMA MAPPER DA LISTA DTO DO TIPO ReadFilmeDto
-        //    return _mapper.Map<List<ReadFilmeDto>>
-        //                            (_context.Filmes.Skip(skip).Take(take));
-
-        //}
 
 
         //MÉTODO QUE RETORNA O PRIMEIRO FILME ENCONTRADO, DADO SEU ID
@@ -185,3 +203,4 @@ namespace FilmesApi.Controllers
 
     }
 }
+
