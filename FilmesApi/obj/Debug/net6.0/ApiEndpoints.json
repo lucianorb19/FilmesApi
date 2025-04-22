@@ -96,7 +96,7 @@
   },
   {
     "ContainingType": "FilmesApi.Controllers.EnderecoController",
-    "Method": "adicionaEndereco",
+    "Method": "AdicionaEndereco",
     "RelativePath": "Endereco",
     "HttpMethod": "POST",
     "IsController": true,

@@ -1,17 +1,58 @@
 # FilmesApi
- Projeto de uma Web API Restful desenvolvida com .NET 6  
- A API é capaz de guardar, num banco de dados relacional, registros de filmes com:  
+ Projeto de uma Web API Restful desenvolvida com .NET 6 para um sistema de Cinemas.
+ A API é capaz de realizar operações básicas - CRUD, num banco de dados relacional, envolvendo as entidades Filmes, Cinemas, Endereços e Sessões.  
+
+
+ ## ENTIDADES / MODELS
+ ### FILME
+ * Id (_gerado pelo sistema_);
  * Título;
  * Gênero;
  * Duração.
 
- As operações que podem ser realizadas pela API são:  
- * Inserção de filme na BD;
- * Consulta a todos os filmes cadastrados;
- * Consulta a um filme específico, dado seu ID;
- * Atualização de todos os campos do filme;
- * Atualização parcial dos campos do filme;
- * Deleção.
+ ### ENDEREÇO
+ * Id (_gerado pelo sistema_);
+ * Logradouro;
+ * Número.
+
+ ### CINEMA
+ * Id (_gerado pelo sistema_);
+ * Nome;
+ * EnderecoId (_relação com Endereço_).
+
+ ### SESSÃO
+ * FilmeId (_relação com Filme_);
+ * CinemaId (_relação com Cinema_)
+
+
+## MÉTODOS E OPERAÇÕES  
+### FILME
+ * AdicionaFilme - _Adiciona um filme à base de dados_;
+ * RecuperaFilmes - _Lista todos os filmes da aplicação_;
+ * RecuperaFilmePorId - _Retorna um filme, dado seu Id_;
+ * AtualizaFilme - _Atualiza completamente um filme, dado seu Id_;
+ * AtualizaFilmeParcial - _Atualiza parcialmente um filme, dado seu Id_;
+ * DeletaFilmes - _Deleta um filme, dado seu Id_.
+
+ ### ENDEREÇO
+ * AdicionaEndereco - _Adiciona um endereço à base de dados_;
+ * RecuperaEnderecos - _Retorna todos endereços cadastrados_;
+ * RecuperaEnderecosPorId - _Retorna um endereço, dado seu Id_;
+ * AtualizaEndereco - _Atualiza um endereço, dado seu Id_;
+ * DeletaEndereco - _Deleta um endereço, dado seu Id_.
+
+ ### CINEMA
+ * AdicionaCinema - _Adiciona um cinema à base de dados_;
+ * RecuperaCinemas - _Retorna todos os cinemas da aplicação_;
+ * RecuperaCinemasPorId - _Retorna um cinema, dado seu Id_;
+ * AtualizaCinema - _Atualiza um cinema, dado seu Id_;
+ * DeleteCinema - _Deleta um cinema, dado seu Id_.
+
+ ### SESSÃO
+ * AdicionaSessao - _Adiciona uma sessão à base de dados_;
+ * RecuperaSessoes - _Retorna todas as sessões cadastradas_;
+ * RecuperaSessoesPorId - _Retorna uma sessão, dado seu Id_;
+
 
  ## DOWNLOADS NECESSÁRIOS
  **_PARA O SISTEMA OPERACIONAL_**

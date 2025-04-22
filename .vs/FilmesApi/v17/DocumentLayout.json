@@ -1,12 +1,54 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\creas\\desktop\\filmesapi\\filmesapi\\controllers\\enderecocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\controllers\\enderecocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\creas\\desktop\\filmesapi\\filmesapi\\controllers\\filmecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\controllers\\filmecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EnderecoController.cs",
+              "DocumentMoniker": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Controllers\\EnderecoController.cs",
+              "RelativeDocumentMoniker": "FilmesApi\\Controllers\\EnderecoController.cs",
+              "ToolTip": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Controllers\\EnderecoController.cs*",
+              "RelativeToolTip": "FilmesApi\\Controllers\\EnderecoController.cs*",
+              "ViewState": "AgIAABEAAAAAAAAAAAAQwB0AAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-22T17:24:52.131Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FilmeController.cs",
+              "DocumentMoniker": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Controllers\\FilmeController.cs",
+              "RelativeDocumentMoniker": "FilmesApi\\Controllers\\FilmeController.cs",
+              "ToolTip": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Controllers\\FilmeController.cs",
+              "RelativeToolTip": "FilmesApi\\Controllers\\FilmeController.cs",
+              "ViewState": "AgIAALEAAAAAAAAAAAAmwL4AAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-22T17:20:49.905Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
