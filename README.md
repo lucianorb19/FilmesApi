@@ -1124,7 +1124,7 @@ Até aqui, as entidades estão relacionadas corretamente, mas ainda faltam algum
 * Mostar na consulta de filmes, em quais sessões cada filme está;
 
 ### RELACIONANDO ENTIDADE SESSAO<->CINEMA 1:N
-* Um cinema passa várias sessões. Cada sessão só acontece em um cinema.
+* Um cinema <-> várias sessões.
 
 Mudar Model Sessao -> Adicionar
 ```
@@ -1166,8 +1166,8 @@ Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes
 Add-Migration Relacao-Cinema-Sessao- Constrói a estrutura da tabela  
 Update-Database - aplica as mudanças na base de dados MySql
 
-Até aqui, tudo funciona, mas a consulta dos filmes gera erro, porque em FilmeController, o método RecuperaFilmes, no seu retorno, por usar
-_context.Filmes retorna um Queryble, que não pode ser convertido pelo AutoMapper.Isso se resolve colocando .ToList() ao final dele.
+** Até aqui, tudo funciona, mas a consulta dos filmes gera erro, porque em FilmeController, o método RecuperaFilmes, no seu retorno, por usar
+_context.Filmes retorna um Queryble, que não pode ser convertido pelo AutoMapper.Isso se resolve colocando **.ToList()** ao final dele.
 
 
 ### MELHORIAS
@@ -1183,14 +1183,14 @@ ReadCinemaDto->Adicionar
 public ICollection<ReadSessaoDto> Sessoes{ get; set; }
 ```
 
-Configurar o AutoMapper para conseguir mapear, em Filmes, as Sessões relacionadas
+Configurar o AutoMapper para conseguir mapear, em Filmes, as Sessões relacionadas  
 FilmeProfile
 ```
 CreateMap<Filme, ReadFilmeDto>()
     .ForMember(filmeDto => filmeDto.Sessoes, 
     opt => opt.MapFrom(filme => filme.Sessoes));
 //ForMember(filmeDto  - PARA O MEMBRO DO DESTINO, QUE É DO TIPO ReadFilmeDto
-//=> cinemaDto.Sessoes - ACESSANDO O CAMPO Sessoes, QUE É UM CAMPO DESSE OBJETO
+//=> filmeDto.Sessoes - ACESSANDO O CAMPO Sessoes, QUE É UM CAMPO DESSE OBJETO
 //opt => opt.MapFrom(filme => filme.Sessoes - QUERO PEGAR, DA ORIGEM, O CAMPO Sessoes
 ```
 
@@ -1297,7 +1297,7 @@ Ferramentas-> Gerenciador de Pacotes NuGet->Console Gerenciador de Pacotes
 Add-Migration “Cinema e Filme”    
 Update-Database
 
-Feitas essas mudanças, o sistema agora cadastra cada sessão como sendo uma maneira de identificar unicamente um filme associado a uma sessão.
+Feitas essas mudanças, o sistema agora cadastra cada sessão como sendo uma maneira de identificar unicamente um filme associado a um cinema.
 
 
 
@@ -1360,10 +1360,10 @@ public IEnumerable<ReadFilmeDto> RecuperaFilmes(
     //SELECIONO, SE HOUVER, OS OBJETOS CUJO O sessao.Cinema.Nome SEJA IGUAL A nomeCinema
 }
 ```
-Tendo método construído, a consulta pode ser feita pela URL, mas se atentando em passar o parâmetro nomeCinema com os devidos encodings para espaço, considerando que, o nome do cinema pode conter espaços, mas para ser passado na URL, não. Isso pode ser feito usando https://www.urlencoder.org/ 
+Tendo método construído, a consulta pode ser feita pela URL, mas se atentando em passar o parâmetro nomeCinema com os devidos encodings para espaço, considerando que, o nome do cinema pode conter espaços, mas para ser passado na URL, não. Isso pode ser feito usando https://www.urlencoder.org/   
 *Espaço vazio, na URL é escrito como %20 
 
-Somente os filmes que estejam em sessões do cinema Cinema Max(skip 0 take 50)
+Somente os filmes que estejam em sessões do cinema Cinema Max(skip 0 take 50)  
 _https://localhost:7114/filme?skip=0&take=50&nomeCinema=Cinema%20Max_
 
 
