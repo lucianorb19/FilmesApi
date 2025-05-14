@@ -214,11 +214,11 @@ public class Filme
     public int Duracao { get; set; }//DURAÇÃO EM MINUTOS
 }
 ```
-Assim, toda vez que um objeto Filme for usado, seus atributos/propriedades seguirão estas restrições de
-[Required] - atributo não pode ser vazio
-[MaxLength] ou [StringLength] - tamanho máximo da string
-[Range] - valor mínimo e máximo
-(ErrorMessage = “...”) - personaliza a mensgem de erro mostrada na tela
+Assim, toda vez que um objeto Filme for usado, seus atributos/propriedades seguirão estas restrições de  
+* [Required] - atributo não pode ser vazio  
+* [MaxLength] ou [StringLength] - tamanho máximo da string  
+* [Range] - valor mínimo e máximo  
+* (ErrorMessage = “...”) - personaliza a mensgem de erro mostrada na tela  
 
 
 ### LEITURA DE DADOS NA APLICAÇÃO - GET
