@@ -423,9 +423,10 @@ Em Program
 ```
 //AUTOMAPPER PODE SER USADO EM TODA A APLICAÇÃO
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+```
 
 Criar Profiles->FilmeProfile.cs, que vai ser a classe que vai possibilitar mapear um objeto CreateFilmeDto em Filme.
-
+```
 using FilmesApi.Data.Dtos;
 using AutoMapper;
 using FilmesApi.Models;
