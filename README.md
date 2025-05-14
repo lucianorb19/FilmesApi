@@ -497,9 +497,10 @@ Atualizar as informações do objeto com o verbo Http PATCH, que atualiza parcia
 Programs->
 ```
 builder.Services.AddControllers().AddNewtonsoftJson();
-
+```
 
 Profiles-> FilmeProfile
+```
  public FilmeProfile()
  {
      CreateMap<CreateFilmeDto, Filme>();
@@ -507,6 +508,7 @@ Profiles-> FilmeProfile
      CreateMap<Filme, UpdateFilmeDto>();
  }
 ```
+
 FilmeController
 ```
 //MÉTODO QUE ATUALIZA PARCIALMENTE UM FILME, DADO SEU ID, COM AS INFORMAÇÕES DO BODY
