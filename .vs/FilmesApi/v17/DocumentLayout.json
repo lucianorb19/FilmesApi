@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\creas\\desktop\\filmesapi\\filmesapi\\profiles\\filmeprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\profiles\\filmeprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\creas\\desktop\\filmesapi\\filmesapi\\controllers\\enderecocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\controllers\\enderecocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\creas\\desktop\\filmesapi\\filmesapi\\data\\dtos\\createenderecodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\data\\dtos\\createenderecodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|c:\\users\\creas\\desktop\\filmesapi\\filmesapi\\models\\endereco.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{565F41D9-44A9-400D-A25B-061567FF5E6E}|FilmesApi\\FilmesApi.csproj|solutionrelative:filmesapi\\models\\endereco.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,19 +22,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FilmeProfile.cs",
-              "DocumentMoniker": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Profiles\\FilmeProfile.cs",
-              "RelativeDocumentMoniker": "FilmesApi\\Profiles\\FilmeProfile.cs",
-              "ToolTip": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Profiles\\FilmeProfile.cs",
-              "RelativeToolTip": "FilmesApi\\Profiles\\FilmeProfile.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAArAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "Endereco.cs",
+              "DocumentMoniker": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Models\\Endereco.cs",
+              "RelativeDocumentMoniker": "FilmesApi\\Models\\Endereco.cs",
+              "ToolTip": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Models\\Endereco.cs",
+              "RelativeToolTip": "FilmesApi\\Models\\Endereco.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-14T17:50:09.544Z",
+              "WhenOpened": "2025-05-15T17:02:16.283Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CreateEnderecoDto.cs",
+              "DocumentMoniker": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Data\\Dtos\\CreateEnderecoDto.cs",
+              "RelativeDocumentMoniker": "FilmesApi\\Data\\Dtos\\CreateEnderecoDto.cs",
+              "ToolTip": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Data\\Dtos\\CreateEnderecoDto.cs",
+              "RelativeToolTip": "FilmesApi\\Data\\Dtos\\CreateEnderecoDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-15T17:02:06.501Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EnderecoController.cs",
+              "DocumentMoniker": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Controllers\\EnderecoController.cs",
+              "RelativeDocumentMoniker": "FilmesApi\\Controllers\\EnderecoController.cs",
+              "ToolTip": "C:\\Users\\CREAS\\Desktop\\FilmesApi\\FilmesApi\\Controllers\\EnderecoController.cs",
+              "RelativeToolTip": "FilmesApi\\Controllers\\EnderecoController.cs",
+              "ViewState": "AgIAAEkAAAAAAAAAAAAcwE4AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-15T16:59:02.377Z",
               "EditorCaption": ""
             }
           ]
